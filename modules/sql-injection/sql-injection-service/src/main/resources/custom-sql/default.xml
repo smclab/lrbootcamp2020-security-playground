@@ -1,0 +1,36 @@
+<?xml version="1.0"?>
+
+<custom-sql>
+	<sql id="it.scinti.lfr.secpg.sqlinjection.persistence.VendorFinder.searchVendorsCount">
+		<![CDATA[
+			SELECT
+				COUNT(DISTINCT vendorId) AS COUNT_VALUE
+			FROM
+				[$Vendor$]
+			WHERE
+				([$Vendor$].companyId = ?) AND
+				(
+					lower(name) = ? OR
+					lower(metadata) = ? OR
+					lower(description) = ?
+				)
+		]]>
+	</sql>
+	<sql id="it.bankit.adr.core.service.persistence.IssueFinder.findByTS_S">
+		<![CDATA[
+			SELECT
+				[$Vendor$].*
+			FROM
+				[$Vendor$]
+			WHERE
+				([$Vendor$].companyId = ?) AND
+				(
+					lower(name) = ? OR
+					lower(metadata) = ? OR
+					lower(description) = ?
+				)
+			ORDER BY
+				[$ORDER_BY$]
+		]]>
+	</sql>
+</custom-sql>

@@ -1,0 +1,19 @@
+<?xml version="1.0"?>
+
+<model-hints>
+	<model name="it.scinti.lfr.secpg.sqlinjection.model.Vendor">
+		<field name="uuid" type="String" />
+		<field name="vendorId" type="long" />
+		<field name="groupId" type="long" />
+		<field name="companyId" type="long" />
+		<field name="userId" type="long" />
+		<field name="userName" type="String" />
+		<field name="createDate" type="Date" />
+		<field name="modifiedDate" type="Date" />
+		<field name="hwId" type="String" />
+		<field name="name" type="String" />
+		<field name="description" type="String" />
+		<field name="website" type="String" />
+		<field name="metadata" type="String" />
+	</model>
+</model-hints>

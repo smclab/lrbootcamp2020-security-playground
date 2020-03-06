@@ -1,0 +1,16 @@
+dependencies {
+	compileOnly group: "biz.aQute.bnd", name: "biz.aQute.bndlib", version: "3.5.0"
+	compileOnly group: "com.liferay", name: "com.liferay.portal.spring.extender.api", version: "3.0.0"
+	compileOnly group: "com.liferay.portal", name: "com.liferay.portal.kernel", version: "3.0.0"
+	compile group: "com.liferay", name: "com.liferay.portal.instance.lifecycle"
+	compile group: "com.liferay", name: "com.liferay.portal.dao.orm.custom.sql", version: "1.0.24"
+	compile group: "com.liferay", name: "com.liferay.portal.upgrade.api", version: "1.0.4"
+
+	compileOnly project(":modules:sql-injection:sql-injection-api")
+}
+
+buildService {
+	apiDir = "../sql-injection-api/src/main/java"
+}
+
+group = ""
