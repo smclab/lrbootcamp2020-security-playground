@@ -10,4 +10,5 @@
 	<bean class="it.scinti.lfr.secpg.sqlinjection.service.impl.VendorLocalServiceImpl" id="it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService" />
 	<bean class="it.scinti.lfr.secpg.sqlinjection.service.impl.VendorServiceImpl" id="it.scinti.lfr.secpg.sqlinjection.service.VendorService" />
 	<bean class="it.scinti.lfr.secpg.sqlinjection.service.persistence.impl.VendorPersistenceImpl" id="it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorPersistence" parent="basePersistence" />
+	<bean class="it.scinti.lfr.secpg.sqlinjection.service.persistence.impl.VendorFinderImpl" id="it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorFinder" parent="basePersistence" />
 </beans>
