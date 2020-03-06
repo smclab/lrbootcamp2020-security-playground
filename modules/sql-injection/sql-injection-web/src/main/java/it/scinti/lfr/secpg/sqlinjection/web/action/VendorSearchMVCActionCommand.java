@@ -22,8 +22,14 @@ import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil;
 import it.scinti.lfr.secpg.sqlinjection.web.constants.SqlInjectionWebPortletKeys;
 
-@Component(immediate = true, property = { "javax.portlet.name=" + SqlInjectionWebPortletKeys.SQLINJECTION_PORTLET_NAME,
-		"mvc.command.name=/search/action" }, service = MVCActionCommand.class)
+@Component(
+	immediate = true,
+	property = { 
+		"javax.portlet.name=" + SqlInjectionWebPortletKeys.SQLINJECTION_PORTLET_NAME,
+		"mvc.command.name=/search/action"
+	},
+	service = MVCActionCommand.class
+)
 public class VendorSearchMVCActionCommand extends BaseMVCActionCommand {
 
 	@Override
@@ -39,7 +45,7 @@ public class VendorSearchMVCActionCommand extends BaseMVCActionCommand {
 			validate(actionRequest);
 
 			int delta = (ParamUtil.getInteger(actionRequest, SearchContainer.DEFAULT_DELTA_PARAM,
-					SearchContainer.DEFAULT_DELTA)) % (SearchContainer.MAX_DELTA + 1); // to avoid pagination attacks
+					SearchContainer.DEFAULT_DELTA)) % (SearchContainer.MAX_DELTA + 1);
 
 			int currentPage = ParamUtil.getInteger(actionRequest, SearchContainer.DEFAULT_CUR_PARAM,
 					SearchContainer.DEFAULT_CUR);
