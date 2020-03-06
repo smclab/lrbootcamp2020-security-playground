@@ -35,17 +35,9 @@ import com.liferay.portal.kernel.util.Validator;
 import com.liferay.portal.kernel.uuid.PortalUUIDUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
-import it.scinti.lfr.secpg.sqlinjection.exception.NoSuchVendorException;
-import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
-import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl;
-import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorModelImpl;
-import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorPersistence;
-
 import java.io.Serializable;
-
 import java.lang.reflect.Field;
 import java.lang.reflect.InvocationHandler;
-
 import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
@@ -55,6 +47,12 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+
+import it.scinti.lfr.secpg.sqlinjection.exception.NoSuchVendorException;
+import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
+import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl;
+import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorModelImpl;
+import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorPersistence;
 
 /**
  * The persistence implementation for the vendor service.

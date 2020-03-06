@@ -1,6 +1,5 @@
 package it.scinti.lfr.secpg.sqlinjection.service.persistence.impl;
 
-import com.liferay.portal.dao.orm.custom.sql.CustomSQLUtil;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -9,6 +8,7 @@ import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.util.dao.orm.CustomSQLUtil;
 
 import java.util.Iterator;
 import java.util.List;
@@ -37,7 +37,7 @@ public class VendorFinderImpl
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_VENDORS_COUNT);
+			String sql = CustomSQLUtil.get(SEARCH_VENDORS_COUNT);
 			
 			sql = StringUtil.replace(
 				sql, "[$BankAssociation$]", 
@@ -81,7 +81,7 @@ public class VendorFinderImpl
 		Session session = null;
 		try {
 			session = openSession();
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_VENDORS);
+			String sql = CustomSQLUtil.get(SEARCH_VENDORS);
 
 			String orderBy = (orderByComparator == null) ? 
 				"name" : orderByComparator.getOrderBy();
