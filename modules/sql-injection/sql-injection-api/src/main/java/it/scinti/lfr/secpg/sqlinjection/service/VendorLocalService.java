@@ -282,6 +282,14 @@ public interface VendorLocalService
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public int getVendorsCount();
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public List<Vendor> searchVendors(
+		long companyId, String keyword, int start, int end,
+		OrderByComparator<Vendor> orderByComparator);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public int searchVendorsCount(long companyId, String keyword);
+
 	/**
 	 * Updates the vendor in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *

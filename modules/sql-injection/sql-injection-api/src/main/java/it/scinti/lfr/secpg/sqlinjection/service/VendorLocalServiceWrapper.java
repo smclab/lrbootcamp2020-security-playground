@@ -346,6 +346,23 @@ public class VendorLocalServiceWrapper
 		return _vendorLocalService.getVendorsCount();
 	}
 
+	@Override
+	public java.util.List<it.scinti.lfr.secpg.sqlinjection.model.Vendor>
+		searchVendors(
+			long companyId, String keyword, int start, int end,
+			com.liferay.portal.kernel.util.OrderByComparator
+				<it.scinti.lfr.secpg.sqlinjection.model.Vendor>
+					orderByComparator) {
+
+		return _vendorLocalService.searchVendors(
+			companyId, keyword, start, end, orderByComparator);
+	}
+
+	@Override
+	public int searchVendorsCount(long companyId, String keyword) {
+		return _vendorLocalService.searchVendorsCount(companyId, keyword);
+	}
+
 	/**
 	 * Updates the vendor in the database or adds it if it does not yet exist. Also notifies the appropriate model listeners.
 	 *
