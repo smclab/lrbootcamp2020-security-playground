@@ -10,13 +10,13 @@
 			WHERE
 				([$Vendor$].companyId = ?) AND
 				(
-					lower(name) = ? OR
-					lower(metadata) = ? OR
-					lower(description) = ?
+					lower(name) like ? OR
+					lower(metadata) like ? OR
+					lower(description) like ?
 				)
 		]]>
 	</sql>
-	<sql id="it.bankit.adr.core.service.persistence.IssueFinder.findByTS_S">
+	<sql id="it.scinti.lfr.secpg.sqlinjection.persistence.VendorFinder.searchVendors">
 		<![CDATA[
 			SELECT
 				[$Vendor$].*
@@ -25,9 +25,9 @@
 			WHERE
 				([$Vendor$].companyId = ?) AND
 				(
-					lower(name) = ? OR
-					lower(metadata) = ? OR
-					lower(description) = ?
+					lower(name) like ? OR
+					lower(metadata) like ? OR
+					lower(description) like ?
 				)
 			ORDER BY
 				[$ORDER_BY$]

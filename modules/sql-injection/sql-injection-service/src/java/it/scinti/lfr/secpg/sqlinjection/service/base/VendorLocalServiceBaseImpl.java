@@ -48,6 +48,7 @@ import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService;
+import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorFinder;
 import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorPersistence;
 
 import java.io.Serializable;
@@ -492,6 +493,24 @@ public abstract class VendorLocalServiceBaseImpl
 	}
 
 	/**
+	 * Returns the vendor finder.
+	 *
+	 * @return the vendor finder
+	 */
+	public VendorFinder getVendorFinder() {
+		return vendorFinder;
+	}
+
+	/**
+	 * Sets the vendor finder.
+	 *
+	 * @param vendorFinder the vendor finder
+	 */
+	public void setVendorFinder(VendorFinder vendorFinder) {
+		this.vendorFinder = vendorFinder;
+	}
+
+	/**
 	 * Returns the counter local service.
 	 *
 	 * @return the counter local service
@@ -678,6 +697,9 @@ public abstract class VendorLocalServiceBaseImpl
 
 	@BeanReference(type = VendorPersistence.class)
 	protected VendorPersistence vendorPersistence;
+
+	@BeanReference(type = VendorFinder.class)
+	protected VendorFinder vendorFinder;
 
 	@ServiceReference(
 		type = com.liferay.counter.kernel.service.CounterLocalService.class

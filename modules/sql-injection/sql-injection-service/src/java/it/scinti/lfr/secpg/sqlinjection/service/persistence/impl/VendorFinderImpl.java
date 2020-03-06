@@ -70,7 +70,7 @@ public class VendorFinderImpl
 			closeSession(session);
 		}
 	}
-	public List<Vendor> searchBankAssociations(
+	public List<Vendor> searchVendors(
 		long companyId,
 		String keyword,
 		int start,

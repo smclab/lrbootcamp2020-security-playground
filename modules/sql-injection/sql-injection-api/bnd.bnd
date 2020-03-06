@@ -1,10 +1,10 @@
 Bundle-Name: it.scinti.lfr.secpg.sqlinjection.api
 Bundle-SymbolicName: it.scinti.lfr.secpg.sqlinjection.api
 Bundle-Version: 1.0.0
-Export-Package:\
-	sql.injection.exception,\
-	sql.injection.model,\
-	sql.injection.service,\
-	sql.injection.service.persistence
+Export-Package: \
+	it.scinti.lfr.secpg.sqlinjection.exception,\
+	it.scinti.lfr.secpg.sqlinjection.model,\
+	it.scinti.lfr.secpg.sqlinjection.service,\
+	it.scinti.lfr.secpg.sqlinjection.service.persistence
 -check: EXPORTS
 -includeresource: META-INF/service.xml=../sql-injection-service/service.xml
