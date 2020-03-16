@@ -2,7 +2,7 @@
 
 <%
 List<Vendor> vendors = (List<Vendor>) renderRequest.getAttribute("vendors");
-Long vendorsCount = (Long) renderRequest.getAttribute("vendorsCount");
+Long vendorsCount = GetterUtil.getLong(renderRequest.getAttribute("vendorsCount"));
 
 if (vendors == null) { 
 	vendors = new ArrayList<Vendor>(0);
@@ -14,12 +14,41 @@ String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 
 <liferay-portlet:actionURL varImpl="searchFormActionURL" name="/search/action" />
 
+<liferay-portlet:actionURL varImpl="addFormActionURL" name="/add/action" />
+
 <liferay-portlet:actionURL varImpl="searchFormIteratorURL" name="/search/action" >
 	<liferay-portlet:param name="keyword" value="<%= keyword %>" />
 </liferay-portlet:actionURL>
 <%
 
 %>
+
+<aui:form
+	action="<%= addFormActionURL.toString() %>"
+	method="post"
+	name="fmadd">
+		<aui:row>
+			<aui:col md="3">
+				<aui:input name="name" label="name" value="" placeholder="3DLabs" />
+			</aui:col>
+			<aui:col md="3">
+				<aui:input name="hwid" label="hw-id" value="" placeholder="3D3D" />
+			</aui:col>
+			<aui:col md="3">
+				<aui:input name="description" label="description" value="" placeholder="3DLabs" />
+			</aui:col>
+			<aui:col md="3">
+				<aui:input name="website" label="website" value="" placeholder="www.3dlabs.com" />
+			</aui:col>
+
+		</aui:row>
+		
+		<aui:button-row>
+			<aui:button type="submit" name="add" value="add" />
+			<aui:button type="reset" name="reset" value="clear" />
+		</aui:button-row>
+
+</aui:form>
 <aui:form
 	action="<%= searchFormActionURL.toString() %>"
 	method="post"
@@ -47,10 +76,10 @@ String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 			results="<%= vendors %>" /> 
 		<%
 			searchContainer.setResults(vendors);
-			searchContainer.setTotal(vendorsCount);
+			searchContainer.setTotal(vendorsCount.intValue());
 			renderRequest.setAttribute("redirect", searchFormIteratorURL.toString());
 		%>
-			<liferay-ui:search-container-row className="com.liferay.portal.kernel.model.User"
+			<liferay-ui:search-container-row className="it.scinti.lfr.secpg.sqlinjection.model.Vendor"
 				keyProperty="vendorId" modelVar="curVendor">
 	
 <%-- 				<liferay-portlet:renderURL varImpl="vendorDetailsURL"> --%>

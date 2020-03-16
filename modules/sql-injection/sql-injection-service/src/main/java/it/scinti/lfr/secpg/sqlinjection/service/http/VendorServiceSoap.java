@@ -14,22 +14,23 @@
 
 package it.scinti.lfr.secpg.sqlinjection.service.http;
 
+import aQute.bnd.annotation.ProviderType;
+
 /**
  * Provides the SOAP utility for the
- * <code>it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil</code> service
- * utility. The static methods of this class call the same methods of the
- * service utility. However, the signatures are different because it is
- * difficult for SOAP to support certain types.
+ * {@link it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil} service utility. The
+ * static methods of this class calls the same methods of the service utility.
+ * However, the signatures are different because it is difficult for SOAP to
+ * support certain types.
  *
  * <p>
  * ServiceBuilder follows certain rules in translating the methods. For example,
- * if the method in the service utility returns a <code>java.util.List</code>,
- * that is translated to an array of
- * <code>it.scinti.lfr.secpg.sqlinjection.model.VendorSoap</code>. If the method in the
- * service utility returns a
- * <code>it.scinti.lfr.secpg.sqlinjection.model.Vendor</code>, that is translated to a
- * <code>it.scinti.lfr.secpg.sqlinjection.model.VendorSoap</code>. Methods that SOAP
- * cannot safely wire are skipped.
+ * if the method in the service utility returns a {@link java.util.List}, that
+ * is translated to an array of {@link it.scinti.lfr.secpg.sqlinjection.model.VendorSoap}.
+ * If the method in the service utility returns a
+ * {@link it.scinti.lfr.secpg.sqlinjection.model.Vendor}, that is translated to a
+ * {@link it.scinti.lfr.secpg.sqlinjection.model.VendorSoap}. Methods that SOAP cannot
+ * safely wire are skipped.
  * </p>
  *
  * <p>
@@ -51,7 +52,10 @@ package it.scinti.lfr.secpg.sqlinjection.service.http;
  *
  * @author Brian Wing Shun Chan
  * @see VendorServiceHttp
+ * @see it.scinti.lfr.secpg.sqlinjection.model.VendorSoap
+ * @see it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil
  * @generated
  */
+@ProviderType
 public class VendorServiceSoap {
 }

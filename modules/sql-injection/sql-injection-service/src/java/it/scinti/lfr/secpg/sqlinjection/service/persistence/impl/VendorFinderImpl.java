@@ -37,7 +37,7 @@ public class VendorFinderImpl
 		try {
 			session = openSession();
 
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_VENDORS_COUNT);
+			String sql = PortalCustomSQLUtil.get(getClass(), SEARCH_VENDORS_COUNT);
 			
 			sql = StringUtil.replace(
 				sql, "[$BankAssociation$]", 
@@ -81,7 +81,7 @@ public class VendorFinderImpl
 		Session session = null;
 		try {
 			session = openSession();
-			String sql = CustomSQLUtil.get(getClass(), SEARCH_VENDORS);
+			String sql = PortalCustomSQLUtil.get(getClass(), SEARCH_VENDORS);
 
 			String orderBy = (orderByComparator == null) ? 
 				"name" : orderByComparator.getOrderBy();

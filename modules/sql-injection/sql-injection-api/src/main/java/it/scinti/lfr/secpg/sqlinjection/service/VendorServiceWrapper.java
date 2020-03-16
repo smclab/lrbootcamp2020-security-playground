@@ -14,6 +14,8 @@
 
 package it.scinti.lfr.secpg.sqlinjection.service;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.service.ServiceWrapper;
 
 /**
@@ -23,18 +25,18 @@ import com.liferay.portal.kernel.service.ServiceWrapper;
  * @see VendorService
  * @generated
  */
-public class VendorServiceWrapper
-	implements ServiceWrapper<VendorService>, VendorService {
-
+@ProviderType
+public class VendorServiceWrapper implements VendorService,
+	ServiceWrapper<VendorService> {
 	public VendorServiceWrapper(VendorService vendorService) {
 		_vendorService = vendorService;
 	}
 
 	/**
-	 * Returns the OSGi service identifier.
-	 *
-	 * @return the OSGi service identifier
-	 */
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
 	@Override
 	public String getOSGiServiceIdentifier() {
 		return _vendorService.getOSGiServiceIdentifier();
@@ -51,5 +53,4 @@ public class VendorServiceWrapper
 	}
 
 	private VendorService _vendorService;
-
 }

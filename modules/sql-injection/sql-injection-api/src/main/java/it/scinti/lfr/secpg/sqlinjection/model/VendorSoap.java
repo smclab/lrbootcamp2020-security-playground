@@ -14,6 +14,8 @@
 
 package it.scinti.lfr.secpg.sqlinjection.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import java.io.Serializable;
 
 import java.util.ArrayList;
@@ -24,10 +26,11 @@ import java.util.List;
  * This class is used by SOAP remote services, specifically {@link it.scinti.lfr.secpg.sqlinjection.service.http.VendorServiceSoap}.
  *
  * @author Brian Wing Shun Chan
+ * @see it.scinti.lfr.secpg.sqlinjection.service.http.VendorServiceSoap
  * @generated
  */
+@ProviderType
 public class VendorSoap implements Serializable {
-
 	public static VendorSoap toSoapModel(Vendor model) {
 		VendorSoap soapModel = new VendorSoap();
 
@@ -213,5 +216,4 @@ public class VendorSoap implements Serializable {
 	private String _description;
 	private String _website;
 	private String _metadata;
-
 }

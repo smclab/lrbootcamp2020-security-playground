@@ -14,6 +14,10 @@
 
 package it.scinti.lfr.secpg.sqlinjection.service.impl;
 
+import com.liferay.portal.kernel.exception.PortalException;
+
+import java.util.Date;
+
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.service.base.VendorLocalServiceBaseImpl;
 
@@ -37,7 +41,23 @@ public class VendorLocalServiceImpl extends VendorLocalServiceBaseImpl {
 	 *
 	 * Never reference this class directly. Use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil</code>.
 	 */
-	
+
+	public Vendor addVendor(long companyId, String name, String description,String hwId, String metadata, String website) throws PortalException {
+		long vendorId = counterLocalService.increment();
+		Vendor vendor = vendorPersistence.create(vendorId);
+
+		vendor.setCreateDate(new Date());
+		vendor.setCompanyId(companyId);
+
+		vendor.setName(name);
+		vendor.setDescription(description);
+		vendor.setHwId(hwId);
+		vendor.setMetadata(metadata);
+		vendor.setWebsite(website);
+		
+		return vendorLocalService.updateVendor(vendor);
+		
+	}
 	public int searchVendorsCount(long companyId, String keyword) {
 		return vendorFinder.searchVendorsCount(companyId, keyword);
 	}

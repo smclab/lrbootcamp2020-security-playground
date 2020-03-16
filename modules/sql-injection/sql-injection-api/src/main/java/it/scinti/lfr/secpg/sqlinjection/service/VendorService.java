@@ -32,35 +32,28 @@ import com.liferay.portal.kernel.transaction.Transactional;
  *
  * @author Brian Wing Shun Chan
  * @see VendorServiceUtil
+ * @see it.scinti.lfr.secpg.sqlinjection.service.base.VendorServiceBaseImpl
+ * @see it.scinti.lfr.secpg.sqlinjection.service.impl.VendorServiceImpl
  * @generated
  */
 @AccessControlled
 @JSONWebService
-@OSGiBeanProperties(
-	property = {
-		"json.web.service.context.name=sqlj",
-		"json.web.service.context.path=Vendor"
-	},
-	service = VendorService.class
-)
+@OSGiBeanProperties(property =  {
+	"json.web.service.context.name=sqlj", "json.web.service.context.path=Vendor"}, service = VendorService.class)
 @ProviderType
-@Transactional(
-	isolation = Isolation.PORTAL,
-	rollbackFor = {PortalException.class, SystemException.class}
-)
+@Transactional(isolation = Isolation.PORTAL, rollbackFor =  {
+	PortalException.class, SystemException.class})
 public interface VendorService extends BaseService {
-
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this interface directly. Always use {@link VendorServiceUtil} to access the vendor remote service. Add custom service methods to <code>it.scinti.lfr.secpg.sqlinjection.service.impl.VendorServiceImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify or reference this interface directly. Always use {@link VendorServiceUtil} to access the vendor remote service. Add custom service methods to {@link it.scinti.lfr.secpg.sqlinjection.service.impl.VendorServiceImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
 
 	/**
-	 * Returns the OSGi service identifier.
-	 *
-	 * @return the OSGi service identifier
-	 */
+	* Returns the OSGi service identifier.
+	*
+	* @return the OSGi service identifier
+	*/
 	public String getOSGiServiceIdentifier();
-
 }

@@ -14,8 +14,12 @@
 
 package it.scinti.lfr.secpg.sqlinjection.model;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.expando.kernel.model.ExpandoBridge;
+
 import com.liferay.exportimport.kernel.lar.StagedModelType;
+
 import com.liferay.portal.kernel.model.ModelWrapper;
 import com.liferay.portal.kernel.service.ServiceContext;
 
@@ -35,8 +39,8 @@ import java.util.Objects;
  * @see Vendor
  * @generated
  */
-public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
-
+@ProviderType
+public class VendorWrapper implements Vendor, ModelWrapper<Vendor> {
 	public VendorWrapper(Vendor vendor) {
 		_vendor = vendor;
 	}
@@ -159,35 +163,35 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	@Override
-	public int compareTo(it.scinti.lfr.secpg.sqlinjection.model.Vendor vendor) {
+	public int compareTo(Vendor vendor) {
 		return _vendor.compareTo(vendor);
 	}
 
 	/**
-	 * Returns the company ID of this vendor.
-	 *
-	 * @return the company ID of this vendor
-	 */
+	* Returns the company ID of this vendor.
+	*
+	* @return the company ID of this vendor
+	*/
 	@Override
 	public long getCompanyId() {
 		return _vendor.getCompanyId();
 	}
 
 	/**
-	 * Returns the create date of this vendor.
-	 *
-	 * @return the create date of this vendor
-	 */
+	* Returns the create date of this vendor.
+	*
+	* @return the create date of this vendor
+	*/
 	@Override
 	public Date getCreateDate() {
 		return _vendor.getCreateDate();
 	}
 
 	/**
-	 * Returns the description of this vendor.
-	 *
-	 * @return the description of this vendor
-	 */
+	* Returns the description of this vendor.
+	*
+	* @return the description of this vendor
+	*/
 	@Override
 	public String getDescription() {
 		return _vendor.getDescription();
@@ -199,60 +203,60 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Returns the group ID of this vendor.
-	 *
-	 * @return the group ID of this vendor
-	 */
+	* Returns the group ID of this vendor.
+	*
+	* @return the group ID of this vendor
+	*/
 	@Override
 	public long getGroupId() {
 		return _vendor.getGroupId();
 	}
 
 	/**
-	 * Returns the hw ID of this vendor.
-	 *
-	 * @return the hw ID of this vendor
-	 */
+	* Returns the hw ID of this vendor.
+	*
+	* @return the hw ID of this vendor
+	*/
 	@Override
 	public String getHwId() {
 		return _vendor.getHwId();
 	}
 
 	/**
-	 * Returns the metadata of this vendor.
-	 *
-	 * @return the metadata of this vendor
-	 */
+	* Returns the metadata of this vendor.
+	*
+	* @return the metadata of this vendor
+	*/
 	@Override
 	public String getMetadata() {
 		return _vendor.getMetadata();
 	}
 
 	/**
-	 * Returns the modified date of this vendor.
-	 *
-	 * @return the modified date of this vendor
-	 */
+	* Returns the modified date of this vendor.
+	*
+	* @return the modified date of this vendor
+	*/
 	@Override
 	public Date getModifiedDate() {
 		return _vendor.getModifiedDate();
 	}
 
 	/**
-	 * Returns the name of this vendor.
-	 *
-	 * @return the name of this vendor
-	 */
+	* Returns the name of this vendor.
+	*
+	* @return the name of this vendor
+	*/
 	@Override
 	public String getName() {
 		return _vendor.getName();
 	}
 
 	/**
-	 * Returns the primary key of this vendor.
-	 *
-	 * @return the primary key of this vendor
-	 */
+	* Returns the primary key of this vendor.
+	*
+	* @return the primary key of this vendor
+	*/
 	@Override
 	public long getPrimaryKey() {
 		return _vendor.getPrimaryKey();
@@ -264,60 +268,60 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Returns the user ID of this vendor.
-	 *
-	 * @return the user ID of this vendor
-	 */
+	* Returns the user ID of this vendor.
+	*
+	* @return the user ID of this vendor
+	*/
 	@Override
 	public long getUserId() {
 		return _vendor.getUserId();
 	}
 
 	/**
-	 * Returns the user name of this vendor.
-	 *
-	 * @return the user name of this vendor
-	 */
+	* Returns the user name of this vendor.
+	*
+	* @return the user name of this vendor
+	*/
 	@Override
 	public String getUserName() {
 		return _vendor.getUserName();
 	}
 
 	/**
-	 * Returns the user uuid of this vendor.
-	 *
-	 * @return the user uuid of this vendor
-	 */
+	* Returns the user uuid of this vendor.
+	*
+	* @return the user uuid of this vendor
+	*/
 	@Override
 	public String getUserUuid() {
 		return _vendor.getUserUuid();
 	}
 
 	/**
-	 * Returns the uuid of this vendor.
-	 *
-	 * @return the uuid of this vendor
-	 */
+	* Returns the uuid of this vendor.
+	*
+	* @return the uuid of this vendor
+	*/
 	@Override
 	public String getUuid() {
 		return _vendor.getUuid();
 	}
 
 	/**
-	 * Returns the vendor ID of this vendor.
-	 *
-	 * @return the vendor ID of this vendor
-	 */
+	* Returns the vendor ID of this vendor.
+	*
+	* @return the vendor ID of this vendor
+	*/
 	@Override
 	public long getVendorId() {
 		return _vendor.getVendorId();
 	}
 
 	/**
-	 * Returns the website of this vendor.
-	 *
-	 * @return the website of this vendor
-	 */
+	* Returns the website of this vendor.
+	*
+	* @return the website of this vendor
+	*/
 	@Override
 	public String getWebsite() {
 		return _vendor.getWebsite();
@@ -354,30 +358,30 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Sets the company ID of this vendor.
-	 *
-	 * @param companyId the company ID of this vendor
-	 */
+	* Sets the company ID of this vendor.
+	*
+	* @param companyId the company ID of this vendor
+	*/
 	@Override
 	public void setCompanyId(long companyId) {
 		_vendor.setCompanyId(companyId);
 	}
 
 	/**
-	 * Sets the create date of this vendor.
-	 *
-	 * @param createDate the create date of this vendor
-	 */
+	* Sets the create date of this vendor.
+	*
+	* @param createDate the create date of this vendor
+	*/
 	@Override
 	public void setCreateDate(Date createDate) {
 		_vendor.setCreateDate(createDate);
 	}
 
 	/**
-	 * Sets the description of this vendor.
-	 *
-	 * @param description the description of this vendor
-	 */
+	* Sets the description of this vendor.
+	*
+	* @param description the description of this vendor
+	*/
 	@Override
 	public void setDescription(String description) {
 		_vendor.setDescription(description);
@@ -386,7 +390,6 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	@Override
 	public void setExpandoBridgeAttributes(
 		com.liferay.portal.kernel.model.BaseModel<?> baseModel) {
-
 		_vendor.setExpandoBridgeAttributes(baseModel);
 	}
 
@@ -401,50 +404,50 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Sets the group ID of this vendor.
-	 *
-	 * @param groupId the group ID of this vendor
-	 */
+	* Sets the group ID of this vendor.
+	*
+	* @param groupId the group ID of this vendor
+	*/
 	@Override
 	public void setGroupId(long groupId) {
 		_vendor.setGroupId(groupId);
 	}
 
 	/**
-	 * Sets the hw ID of this vendor.
-	 *
-	 * @param hwId the hw ID of this vendor
-	 */
+	* Sets the hw ID of this vendor.
+	*
+	* @param hwId the hw ID of this vendor
+	*/
 	@Override
 	public void setHwId(String hwId) {
 		_vendor.setHwId(hwId);
 	}
 
 	/**
-	 * Sets the metadata of this vendor.
-	 *
-	 * @param metadata the metadata of this vendor
-	 */
+	* Sets the metadata of this vendor.
+	*
+	* @param metadata the metadata of this vendor
+	*/
 	@Override
 	public void setMetadata(String metadata) {
 		_vendor.setMetadata(metadata);
 	}
 
 	/**
-	 * Sets the modified date of this vendor.
-	 *
-	 * @param modifiedDate the modified date of this vendor
-	 */
+	* Sets the modified date of this vendor.
+	*
+	* @param modifiedDate the modified date of this vendor
+	*/
 	@Override
 	public void setModifiedDate(Date modifiedDate) {
 		_vendor.setModifiedDate(modifiedDate);
 	}
 
 	/**
-	 * Sets the name of this vendor.
-	 *
-	 * @param name the name of this vendor
-	 */
+	* Sets the name of this vendor.
+	*
+	* @param name the name of this vendor
+	*/
 	@Override
 	public void setName(String name) {
 		_vendor.setName(name);
@@ -456,10 +459,10 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Sets the primary key of this vendor.
-	 *
-	 * @param primaryKey the primary key of this vendor
-	 */
+	* Sets the primary key of this vendor.
+	*
+	* @param primaryKey the primary key of this vendor
+	*/
 	@Override
 	public void setPrimaryKey(long primaryKey) {
 		_vendor.setPrimaryKey(primaryKey);
@@ -471,74 +474,72 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	/**
-	 * Sets the user ID of this vendor.
-	 *
-	 * @param userId the user ID of this vendor
-	 */
+	* Sets the user ID of this vendor.
+	*
+	* @param userId the user ID of this vendor
+	*/
 	@Override
 	public void setUserId(long userId) {
 		_vendor.setUserId(userId);
 	}
 
 	/**
-	 * Sets the user name of this vendor.
-	 *
-	 * @param userName the user name of this vendor
-	 */
+	* Sets the user name of this vendor.
+	*
+	* @param userName the user name of this vendor
+	*/
 	@Override
 	public void setUserName(String userName) {
 		_vendor.setUserName(userName);
 	}
 
 	/**
-	 * Sets the user uuid of this vendor.
-	 *
-	 * @param userUuid the user uuid of this vendor
-	 */
+	* Sets the user uuid of this vendor.
+	*
+	* @param userUuid the user uuid of this vendor
+	*/
 	@Override
 	public void setUserUuid(String userUuid) {
 		_vendor.setUserUuid(userUuid);
 	}
 
 	/**
-	 * Sets the uuid of this vendor.
-	 *
-	 * @param uuid the uuid of this vendor
-	 */
+	* Sets the uuid of this vendor.
+	*
+	* @param uuid the uuid of this vendor
+	*/
 	@Override
 	public void setUuid(String uuid) {
 		_vendor.setUuid(uuid);
 	}
 
 	/**
-	 * Sets the vendor ID of this vendor.
-	 *
-	 * @param vendorId the vendor ID of this vendor
-	 */
+	* Sets the vendor ID of this vendor.
+	*
+	* @param vendorId the vendor ID of this vendor
+	*/
 	@Override
 	public void setVendorId(long vendorId) {
 		_vendor.setVendorId(vendorId);
 	}
 
 	/**
-	 * Sets the website of this vendor.
-	 *
-	 * @param website the website of this vendor
-	 */
+	* Sets the website of this vendor.
+	*
+	* @param website the website of this vendor
+	*/
 	@Override
 	public void setWebsite(String website) {
 		_vendor.setWebsite(website);
 	}
 
 	@Override
-	public com.liferay.portal.kernel.model.CacheModel
-		<it.scinti.lfr.secpg.sqlinjection.model.Vendor> toCacheModel() {
-
+	public com.liferay.portal.kernel.model.CacheModel<Vendor> toCacheModel() {
 		return _vendor.toCacheModel();
 	}
 
 	@Override
-	public it.scinti.lfr.secpg.sqlinjection.model.Vendor toEscapedModel() {
+	public Vendor toEscapedModel() {
 		return new VendorWrapper(_vendor.toEscapedModel());
 	}
 
@@ -548,7 +549,7 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	@Override
-	public it.scinti.lfr.secpg.sqlinjection.model.Vendor toUnescapedModel() {
+	public Vendor toUnescapedModel() {
 		return new VendorWrapper(_vendor.toUnescapedModel());
 	}
 
@@ -602,5 +603,4 @@ public class VendorWrapper implements ModelWrapper<Vendor>, Vendor {
 	}
 
 	private final Vendor _vendor;
-
 }

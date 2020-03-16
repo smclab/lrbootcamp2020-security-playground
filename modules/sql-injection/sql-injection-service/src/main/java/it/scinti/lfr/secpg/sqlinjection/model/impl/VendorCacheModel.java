@@ -14,6 +14,8 @@
 
 package it.scinti.lfr.secpg.sqlinjection.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.model.CacheModel;
 import com.liferay.portal.kernel.util.HashUtil;
 import com.liferay.portal.kernel.util.StringBundler;
@@ -31,10 +33,11 @@ import java.util.Date;
  * The cache model class for representing Vendor in entity cache.
  *
  * @author Brian Wing Shun Chan
+ * @see Vendor
  * @generated
  */
+@ProviderType
 public class VendorCacheModel implements CacheModel<Vendor>, Externalizable {
-
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj) {
@@ -193,7 +196,8 @@ public class VendorCacheModel implements CacheModel<Vendor>, Externalizable {
 	}
 
 	@Override
-	public void writeExternal(ObjectOutput objectOutput) throws IOException {
+	public void writeExternal(ObjectOutput objectOutput)
+		throws IOException {
 		if (uuid == null) {
 			objectOutput.writeUTF("");
 		}
@@ -268,5 +272,4 @@ public class VendorCacheModel implements CacheModel<Vendor>, Externalizable {
 	public String description;
 	public String website;
 	public String metadata;
-
 }

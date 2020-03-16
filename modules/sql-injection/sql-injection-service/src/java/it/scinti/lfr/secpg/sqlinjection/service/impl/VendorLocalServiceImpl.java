@@ -36,6 +36,10 @@ import it.scinti.lfr.secpg.sqlinjection.service.base.VendorLocalServiceBaseImpl;
  */
 public class VendorLocalServiceImpl extends VendorLocalServiceBaseImpl {
 
+	public Vendor addVendor(long companyId, String name, String description, String hwId, String metadata, String website) throws PortalException {
+		return null;
+	}
+	
 	public long searchVendorsCount(long companyId, String keyword) {
 		return vendorFinder.searchVendorsCount(companyId, keyword);
 	}
@@ -43,4 +47,5 @@ public class VendorLocalServiceImpl extends VendorLocalServiceBaseImpl {
 	public List<Vendor> searchVendors(long companyId, String keyword, int start, int end, OrderByComparator<Vendor> orderByComparator) {
 		return vendorFinder.searchVendors(companyId, keyword, start, end, orderByComparator);
 	}
+
 }

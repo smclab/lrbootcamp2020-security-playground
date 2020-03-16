@@ -14,13 +14,14 @@
 
 package it.scinti.lfr.secpg.sqlinjection.service.http;
 
+import aQute.bnd.annotation.ProviderType;
+
 /**
  * Provides the HTTP utility for the
- * <code>it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil</code> service
- * utility. The
+ * {@link it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil} service utility. The
  * static methods of this class calls the same methods of the service utility.
  * However, the signatures are different because it requires an additional
- * <code>com.liferay.portal.kernel.security.auth.HttpPrincipal</code> parameter.
+ * {@link com.liferay.portal.kernel.security.auth.HttpPrincipal} parameter.
  *
  * <p>
  * The benefits of using the HTTP utility is that it is fast and allows for
@@ -39,7 +40,10 @@ package it.scinti.lfr.secpg.sqlinjection.service.http;
  *
  * @author Brian Wing Shun Chan
  * @see VendorServiceSoap
+ * @see com.liferay.portal.kernel.security.auth.HttpPrincipal
+ * @see it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil
  * @generated
  */
+@ProviderType
 public class VendorServiceHttp {
 }

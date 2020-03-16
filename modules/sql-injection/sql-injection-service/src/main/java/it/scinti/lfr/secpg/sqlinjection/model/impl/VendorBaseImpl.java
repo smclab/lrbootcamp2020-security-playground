@@ -14,6 +14,8 @@
 
 package it.scinti.lfr.secpg.sqlinjection.model.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil;
 
@@ -29,12 +31,12 @@ import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil;
  * @see Vendor
  * @generated
  */
+@ProviderType
 public abstract class VendorBaseImpl extends VendorModelImpl implements Vendor {
-
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. All methods that expect a vendor model instance should use the <code>Vendor</code> interface instead.
+	 * Never modify or reference this class directly. All methods that expect a vendor model instance should use the {@link Vendor} interface instead.
 	 */
 	@Override
 	public void persist() {
@@ -45,5 +47,4 @@ public abstract class VendorBaseImpl extends VendorModelImpl implements Vendor {
 			VendorLocalServiceUtil.updateVendor(this);
 		}
 	}
-
 }

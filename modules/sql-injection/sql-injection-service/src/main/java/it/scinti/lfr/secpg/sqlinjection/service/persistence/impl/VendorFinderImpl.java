@@ -1,6 +1,6 @@
 package it.scinti.lfr.secpg.sqlinjection.service.persistence.impl;
 
-import com.liferay.portal.kernel.dao.orm.PortalCustomSQLUtil;
+import com.liferay.portal.dao.orm.custom.sql.CustomSQL;
 import com.liferay.portal.kernel.dao.orm.QueryPos;
 import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.SQLQuery;
@@ -9,6 +9,7 @@ import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.StringUtil;
+import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.Iterator;
 import java.util.List;
@@ -16,39 +17,42 @@ import java.util.List;
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl;
 import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorModelImpl;
+import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorFinder;
 
 public class VendorFinderImpl 
 	extends VendorFinderBaseImpl implements VendorFinder {
 
 	public static final String SEARCH_VENDORS_COUNT =
-		Vendor.class.getName() + ".searchVendorsCount";
+		VendorFinder.class.getName() + ".searchVendorsCount";
 
 	public static final String SEARCH_VENDORS =
-		Vendor.class.getName() + ".searchVendors";
+		VendorFinder.class.getName() + ".searchVendors";
 	
 	public int searchVendorsCount(
 		long companyId,
 		String keyword) {
 		
-		keyword = StringUtil.toLowerCase(keyword);
+		keyword = "%" + StringUtil.toLowerCase(keyword) + "%";
 		
 		Session session = null;
 
 		try {
 			session = openSession();
 
-			String sql = PortalCustomSQLUtil.get(SEARCH_VENDORS_COUNT);
+			String sql = _customSQL.get(getClass(), SEARCH_VENDORS_COUNT);
 			
 			sql = StringUtil.replace(
-				sql, "[$BankAssociation$]", 
+				sql, "[$Vendor$]", 
 				VendorModelImpl.TABLE_NAME);
 
-			SQLQuery q = session.createSynchronizedSQLQuery(sql);
+			SQLQuery q = session.createSQLQuery(sql);
 			q.addScalar(COUNT_COLUMN_NAME, Type.LONG);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 			
 			qPos.add(companyId);
+			qPos.add(keyword);
+			qPos.add(keyword);
 			qPos.add(keyword);
 			
 			Iterator<Long> itr = q.iterate();
@@ -76,29 +80,31 @@ public class VendorFinderImpl
 		int end,
 		OrderByComparator<Vendor> orderByComparator) {
 		
-		keyword = StringUtil.toLowerCase(keyword);
+		keyword = "%"+ StringUtil.toLowerCase(keyword) + "%";
 		
 		Session session = null;
 		try {
 			session = openSession();
-			String sql = PortalCustomSQLUtil.get(SEARCH_VENDORS);
+			String sql = _customSQL.get(getClass(), SEARCH_VENDORS);
 
 			String orderBy = (orderByComparator == null) ? 
-				"name" : orderByComparator.getOrderBy();
+				"[$Vendor$].name" : orderByComparator.getOrderBy();
 			
-			sql = StringUtil.replace(sql, "[$ORDER_BY$]", "ORDER BY " + orderBy);
+			sql = StringUtil.replace(sql, "[$ORDER_BY$]", orderBy);
 
 			sql = StringUtil.replace(
-				sql, "[$BankAssociation$]", 
+				sql, "[$Vendor$]", 
 				VendorModelImpl.TABLE_NAME);
 
-				SQLQuery q = session.createSynchronizedSQLQuery(sql);
+				SQLQuery q = session.createSQLQuery(sql);
 
 			q.addEntity("Vendor", VendorImpl.class);
 
 			QueryPos qPos = QueryPos.getInstance(q);
 
 			qPos.add(companyId);
+			qPos.add(keyword);
+			qPos.add(keyword);
 			qPos.add(keyword);
 						
 			return (List<Vendor>)
@@ -112,4 +118,6 @@ public class VendorFinderImpl
 		}
 
 	}
+	@ServiceReference(type = CustomSQL.class)
+	private CustomSQL _customSQL;
 }

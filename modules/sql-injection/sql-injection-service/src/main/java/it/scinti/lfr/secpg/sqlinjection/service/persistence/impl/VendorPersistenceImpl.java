@@ -14,6 +14,8 @@
 
 package it.scinti.lfr.secpg.sqlinjection.service.persistence.impl;
 
+import aQute.bnd.annotation.ProviderType;
+
 import com.liferay.portal.kernel.dao.orm.EntityCache;
 import com.liferay.portal.kernel.dao.orm.FinderCache;
 import com.liferay.portal.kernel.dao.orm.FinderPath;
@@ -23,9 +25,10 @@ import com.liferay.portal.kernel.dao.orm.QueryUtil;
 import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.security.auth.CompanyThreadLocal;
 import com.liferay.portal.kernel.service.ServiceContext;
 import com.liferay.portal.kernel.service.ServiceContextThreadLocal;
+import com.liferay.portal.kernel.service.persistence.CompanyProvider;
+import com.liferay.portal.kernel.service.persistence.CompanyProviderWrapper;
 import com.liferay.portal.kernel.service.persistence.impl.BasePersistenceImpl;
 import com.liferay.portal.kernel.util.OrderByComparator;
 import com.liferay.portal.kernel.util.ProxyUtil;
@@ -64,31 +67,50 @@ import java.util.Set;
  * </p>
  *
  * @author Brian Wing Shun Chan
+ * @see VendorPersistence
+ * @see it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorUtil
  * @generated
  */
-public class VendorPersistenceImpl
-	extends BasePersistenceImpl<Vendor> implements VendorPersistence {
-
+@ProviderType
+public class VendorPersistenceImpl extends BasePersistenceImpl<Vendor>
+	implements VendorPersistence {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify or reference this class directly. Always use <code>VendorUtil</code> to access the vendor persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
+	 * Never modify or reference this class directly. Always use {@link VendorUtil} to access the vendor persistence. Modify <code>service.xml</code> and rerun ServiceBuilder to regenerate this class.
 	 */
-	public static final String FINDER_CLASS_NAME_ENTITY =
-		VendorImpl.class.getName();
-
-	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION =
-		FINDER_CLASS_NAME_ENTITY + ".List1";
-
-	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION =
-		FINDER_CLASS_NAME_ENTITY + ".List2";
-
-	private FinderPath _finderPathWithPaginationFindAll;
-	private FinderPath _finderPathWithoutPaginationFindAll;
-	private FinderPath _finderPathCountAll;
-	private FinderPath _finderPathWithPaginationFindByUuid;
-	private FinderPath _finderPathWithoutPaginationFindByUuid;
-	private FinderPath _finderPathCountByUuid;
+	public static final String FINDER_CLASS_NAME_ENTITY = VendorImpl.class.getName();
+	public static final String FINDER_CLASS_NAME_LIST_WITH_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+		".List1";
+	public static final String FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION = FINDER_CLASS_NAME_ENTITY +
+		".List2";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_ALL = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll", new String[0]);
+	public static final FinderPath FINDER_PATH_COUNT_ALL = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll", new String[0]);
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
+			new String[] { String.class.getName() },
+			VendorModelImpl.UUID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_UUID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where uuid = &#63;.
@@ -105,7 +127,7 @@ public class VendorPersistenceImpl
 	 * Returns a range of all the vendors where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -122,7 +144,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -132,10 +154,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByUuid(
-		String uuid, int start, int end,
+	public List<Vendor> findByUuid(String uuid, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		return findByUuid(uuid, start, end, orderByComparator, true);
 	}
 
@@ -143,44 +163,41 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where uuid = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByUuid(
-		String uuid, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findByUuid(String uuid, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		uuid = Objects.toString(uuid, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByUuid;
-				finderArgs = new Object[] {uuid};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID;
+			finderArgs = new Object[] { uuid };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByUuid;
-			finderArgs = new Object[] {uuid, start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID;
+			finderArgs = new Object[] { uuid, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -197,8 +214,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -218,10 +235,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -240,21 +258,27 @@ public class VendorPersistenceImpl
 					qPos.add(uuid);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -273,10 +297,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByUuid_First(
-			String uuid, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByUuid_First(String uuid,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByUuid_First(uuid, orderByComparator);
 
 		if (vendor != null) {
@@ -303,9 +326,8 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByUuid_First(
-		String uuid, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByUuid_First(String uuid,
+		OrderByComparator<Vendor> orderByComparator) {
 		List<Vendor> list = findByUuid(uuid, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -324,10 +346,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByUuid_Last(
-			String uuid, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByUuid_Last(String uuid,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByUuid_Last(uuid, orderByComparator);
 
 		if (vendor != null) {
@@ -354,17 +375,15 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByUuid_Last(
-		String uuid, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByUuid_Last(String uuid,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countByUuid(uuid);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findByUuid(
-			uuid, count - 1, count, orderByComparator);
+		List<Vendor> list = findByUuid(uuid, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -383,11 +402,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findByUuid_PrevAndNext(
-			long vendorId, String uuid,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findByUuid_PrevAndNext(long vendorId, String uuid,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		uuid = Objects.toString(uuid, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -399,33 +416,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getByUuid_PrevAndNext(
-				session, vendor, uuid, orderByComparator, true);
+			array[0] = getByUuid_PrevAndNext(session, vendor, uuid,
+					orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getByUuid_PrevAndNext(
-				session, vendor, uuid, orderByComparator, false);
+			array[2] = getByUuid_PrevAndNext(session, vendor, uuid,
+					orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getByUuid_PrevAndNext(
-		Session session, Vendor vendor, String uuid,
-		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
+	protected Vendor getByUuid_PrevAndNext(Session session, Vendor vendor,
+		String uuid, OrderByComparator<Vendor> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -446,8 +462,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -519,10 +534,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -543,9 +558,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeByUuid(String uuid) {
-		for (Vendor vendor :
-				findByUuid(uuid, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findByUuid(uuid, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -560,9 +574,9 @@ public class VendorPersistenceImpl
 	public int countByUuid(String uuid) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = _finderPathCountByUuid;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID;
 
-		Object[] finderArgs = new Object[] {uuid};
+		Object[] finderArgs = new Object[] { uuid };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -601,10 +615,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -614,16 +628,22 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
+	private static final String _FINDER_COLUMN_UUID_UUID_1 = "vendor.uuid IS NULL";
 	private static final String _FINDER_COLUMN_UUID_UUID_2 = "vendor.uuid = ?";
-
-	private static final String _FINDER_COLUMN_UUID_UUID_3 =
-		"(vendor.uuid IS NULL OR vendor.uuid = '')";
-
-	private FinderPath _finderPathFetchByUUID_G;
-	private FinderPath _finderPathCountByUUID_G;
+	private static final String _FINDER_COLUMN_UUID_UUID_3 = "(vendor.uuid IS NULL OR vendor.uuid = '')";
+	public static final FinderPath FINDER_PATH_FETCH_BY_UUID_G = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
+			new String[] { String.class.getName(), Long.class.getName() },
+			VendorModelImpl.UUID_COLUMN_BITMASK |
+			VendorModelImpl.GROUPID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_G = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
+			new String[] { String.class.getName(), Long.class.getName() });
 
 	/**
-	 * Returns the vendor where uuid = &#63; and groupId = &#63; or throws a <code>NoSuchVendorException</code> if it could not be found.
+	 * Returns the vendor where uuid = &#63; and groupId = &#63; or throws a {@link NoSuchVendorException} if it could not be found.
 	 *
 	 * @param uuid the uuid
 	 * @param groupId the group ID
@@ -633,7 +653,6 @@ public class VendorPersistenceImpl
 	@Override
 	public Vendor findByUUID_G(String uuid, long groupId)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByUUID_G(uuid, groupId);
 
 		if (vendor == null) {
@@ -676,34 +695,28 @@ public class VendorPersistenceImpl
 	 *
 	 * @param uuid the uuid
 	 * @param groupId the group ID
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByUUID_G(
-		String uuid, long groupId, boolean useFinderCache) {
-
+	public Vendor fetchByUUID_G(String uuid, long groupId,
+		boolean retrieveFromCache) {
 		uuid = Objects.toString(uuid, "");
 
-		Object[] finderArgs = null;
-
-		if (useFinderCache) {
-			finderArgs = new Object[] {uuid, groupId};
-		}
+		Object[] finderArgs = new Object[] { uuid, groupId };
 
 		Object result = null;
 
-		if (useFinderCache) {
-			result = finderCache.getResult(
-				_finderPathFetchByUUID_G, finderArgs, this);
+		if (retrieveFromCache) {
+			result = finderCache.getResult(FINDER_PATH_FETCH_BY_UUID_G,
+					finderArgs, this);
 		}
 
 		if (result instanceof Vendor) {
 			Vendor vendor = (Vendor)result;
 
 			if (!Objects.equals(uuid, vendor.getUuid()) ||
-				(groupId != vendor.getGroupId())) {
-
+					(groupId != vendor.getGroupId())) {
 				result = null;
 			}
 		}
@@ -746,10 +759,8 @@ public class VendorPersistenceImpl
 				List<Vendor> list = q.list();
 
 				if (list.isEmpty()) {
-					if (useFinderCache) {
-						finderCache.putResult(
-							_finderPathFetchByUUID_G, finderArgs, list);
-					}
+					finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+						finderArgs, list);
 				}
 				else {
 					Vendor vendor = list.get(0);
@@ -759,13 +770,10 @@ public class VendorPersistenceImpl
 					cacheResult(vendor);
 				}
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(
-						_finderPathFetchByUUID_G, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -790,7 +798,6 @@ public class VendorPersistenceImpl
 	@Override
 	public Vendor removeByUUID_G(String uuid, long groupId)
 		throws NoSuchVendorException {
-
 		Vendor vendor = findByUUID_G(uuid, groupId);
 
 		return remove(vendor);
@@ -807,9 +814,9 @@ public class VendorPersistenceImpl
 	public int countByUUID_G(String uuid, long groupId) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = _finderPathCountByUUID_G;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_G;
 
-		Object[] finderArgs = new Object[] {uuid, groupId};
+		Object[] finderArgs = new Object[] { uuid, groupId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -852,10 +859,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -865,18 +872,30 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_G_UUID_2 =
-		"vendor.uuid = ? AND ";
-
-	private static final String _FINDER_COLUMN_UUID_G_UUID_3 =
-		"(vendor.uuid IS NULL OR vendor.uuid = '') AND ";
-
-	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 =
-		"vendor.groupId = ?";
-
-	private FinderPath _finderPathWithPaginationFindByUuid_C;
-	private FinderPath _finderPathWithoutPaginationFindByUuid_C;
-	private FinderPath _finderPathCountByUuid_C;
+	private static final String _FINDER_COLUMN_UUID_G_UUID_1 = "vendor.uuid IS NULL AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_2 = "vendor.uuid = ? AND ";
+	private static final String _FINDER_COLUMN_UUID_G_UUID_3 = "(vendor.uuid IS NULL OR vendor.uuid = '') AND ";
+	private static final String _FINDER_COLUMN_UUID_G_GROUPID_2 = "vendor.groupId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
+			new String[] {
+				String.class.getName(), Long.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C =
+		new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
+			new String[] { String.class.getName(), Long.class.getName() },
+			VendorModelImpl.UUID_COLUMN_BITMASK |
+			VendorModelImpl.COMPANYID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_UUID_C = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
+			new String[] { String.class.getName(), Long.class.getName() });
 
 	/**
 	 * Returns all the vendors where uuid = &#63; and companyId = &#63;.
@@ -887,15 +906,15 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public List<Vendor> findByUuid_C(String uuid, long companyId) {
-		return findByUuid_C(
-			uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the vendors where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -905,9 +924,8 @@ public class VendorPersistenceImpl
 	 * @return the range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByUuid_C(
-		String uuid, long companyId, int start, int end) {
-
+	public List<Vendor> findByUuid_C(String uuid, long companyId, int start,
+		int end) {
 		return findByUuid_C(uuid, companyId, start, end, null);
 	}
 
@@ -915,7 +933,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -926,19 +944,16 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByUuid_C(
-		String uuid, long companyId, int start, int end,
-		OrderByComparator<Vendor> orderByComparator) {
-
-		return findByUuid_C(
-			uuid, companyId, start, end, orderByComparator, true);
+	public List<Vendor> findByUuid_C(String uuid, long companyId, int start,
+		int end, OrderByComparator<Vendor> orderByComparator) {
+		return findByUuid_C(uuid, companyId, start, end, orderByComparator, true);
 	}
 
 	/**
 	 * Returns an ordered range of all the vendors where uuid = &#63; and companyId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param uuid the uuid
@@ -946,45 +961,44 @@ public class VendorPersistenceImpl
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByUuid_C(
-		String uuid, long companyId, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findByUuid_C(String uuid, long companyId, int start,
+		int end, OrderByComparator<Vendor> orderByComparator,
+		boolean retrieveFromCache) {
 		uuid = Objects.toString(uuid, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByUuid_C;
-				finderArgs = new Object[] {uuid, companyId};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C;
+			finderArgs = new Object[] { uuid, companyId };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByUuid_C;
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_UUID_C;
 			finderArgs = new Object[] {
-				uuid, companyId, start, end, orderByComparator
-			};
+					uuid, companyId,
+					
+					start, end, orderByComparator
+				};
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
 					if (!uuid.equals(vendor.getUuid()) ||
-						(companyId != vendor.getCompanyId())) {
-
+							(companyId != vendor.getCompanyId())) {
 						list = null;
 
 						break;
@@ -997,8 +1011,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					4 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(4 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(4);
@@ -1020,10 +1034,11 @@ public class VendorPersistenceImpl
 			query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1044,21 +1059,27 @@ public class VendorPersistenceImpl
 
 				qPos.add(companyId);
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -1078,11 +1099,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByUuid_C_First(
-			String uuid, long companyId,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByUuid_C_First(String uuid, long companyId,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByUuid_C_First(uuid, companyId, orderByComparator);
 
 		if (vendor != null) {
@@ -1113,12 +1132,10 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByUuid_C_First(
-		String uuid, long companyId,
+	public Vendor fetchByUuid_C_First(String uuid, long companyId,
 		OrderByComparator<Vendor> orderByComparator) {
-
-		List<Vendor> list = findByUuid_C(
-			uuid, companyId, 0, 1, orderByComparator);
+		List<Vendor> list = findByUuid_C(uuid, companyId, 0, 1,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1137,11 +1154,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByUuid_C_Last(
-			String uuid, long companyId,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByUuid_C_Last(String uuid, long companyId,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByUuid_C_Last(uuid, companyId, orderByComparator);
 
 		if (vendor != null) {
@@ -1172,18 +1187,16 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByUuid_C_Last(
-		String uuid, long companyId,
+	public Vendor fetchByUuid_C_Last(String uuid, long companyId,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		int count = countByUuid_C(uuid, companyId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findByUuid_C(
-			uuid, companyId, count - 1, count, orderByComparator);
+		List<Vendor> list = findByUuid_C(uuid, companyId, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1203,11 +1216,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findByUuid_C_PrevAndNext(
-			long vendorId, String uuid, long companyId,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findByUuid_C_PrevAndNext(long vendorId, String uuid,
+		long companyId, OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		uuid = Objects.toString(uuid, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -1219,33 +1230,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getByUuid_C_PrevAndNext(
-				session, vendor, uuid, companyId, orderByComparator, true);
+			array[0] = getByUuid_C_PrevAndNext(session, vendor, uuid,
+					companyId, orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getByUuid_C_PrevAndNext(
-				session, vendor, uuid, companyId, orderByComparator, false);
+			array[2] = getByUuid_C_PrevAndNext(session, vendor, uuid,
+					companyId, orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getByUuid_C_PrevAndNext(
-		Session session, Vendor vendor, String uuid, long companyId,
+	protected Vendor getByUuid_C_PrevAndNext(Session session, Vendor vendor,
+		String uuid, long companyId,
 		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				5 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(5 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1268,8 +1278,7 @@ public class VendorPersistenceImpl
 		query.append(_FINDER_COLUMN_UUID_C_COMPANYID_2);
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1343,10 +1352,10 @@ public class VendorPersistenceImpl
 		qPos.add(companyId);
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -1368,11 +1377,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeByUuid_C(String uuid, long companyId) {
-		for (Vendor vendor :
-				findByUuid_C(
-					uuid, companyId, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-					null)) {
-
+		for (Vendor vendor : findByUuid_C(uuid, companyId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -1388,9 +1394,9 @@ public class VendorPersistenceImpl
 	public int countByUuid_C(String uuid, long companyId) {
 		uuid = Objects.toString(uuid, "");
 
-		FinderPath finderPath = _finderPathCountByUuid_C;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_UUID_C;
 
-		Object[] finderArgs = new Object[] {uuid, companyId};
+		Object[] finderArgs = new Object[] { uuid, companyId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1433,10 +1439,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -1446,18 +1452,28 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_UUID_C_UUID_2 =
-		"vendor.uuid = ? AND ";
-
-	private static final String _FINDER_COLUMN_UUID_C_UUID_3 =
-		"(vendor.uuid IS NULL OR vendor.uuid = '') AND ";
-
-	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 =
-		"vendor.companyId = ?";
-
-	private FinderPath _finderPathWithPaginationFindByhwId;
-	private FinderPath _finderPathWithoutPaginationFindByhwId;
-	private FinderPath _finderPathCountByhwId;
+	private static final String _FINDER_COLUMN_UUID_C_UUID_1 = "vendor.uuid IS NULL AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_2 = "vendor.uuid = ? AND ";
+	private static final String _FINDER_COLUMN_UUID_C_UUID_3 = "(vendor.uuid IS NULL OR vendor.uuid = '') AND ";
+	private static final String _FINDER_COLUMN_UUID_C_COMPANYID_2 = "vendor.companyId = ?";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_HWID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByhwId",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByhwId",
+			new String[] { String.class.getName() },
+			VendorModelImpl.HWID_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_HWID = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByhwId",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where hwId = &#63;.
@@ -1474,7 +1490,7 @@ public class VendorPersistenceImpl
 	 * Returns a range of all the vendors where hwId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param hwId the hw ID
@@ -1491,7 +1507,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where hwId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param hwId the hw ID
@@ -1501,10 +1517,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByhwId(
-		String hwId, int start, int end,
+	public List<Vendor> findByhwId(String hwId, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		return findByhwId(hwId, start, end, orderByComparator, true);
 	}
 
@@ -1512,44 +1526,41 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where hwId = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param hwId the hw ID
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByhwId(
-		String hwId, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findByhwId(String hwId, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		hwId = Objects.toString(hwId, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByhwId;
-				finderArgs = new Object[] {hwId};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID;
+			finderArgs = new Object[] { hwId };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByhwId;
-			finderArgs = new Object[] {hwId, start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_HWID;
+			finderArgs = new Object[] { hwId, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -1566,8 +1577,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -1587,10 +1598,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -1609,21 +1621,27 @@ public class VendorPersistenceImpl
 					qPos.add(hwId);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -1642,10 +1660,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByhwId_First(
-			String hwId, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByhwId_First(String hwId,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByhwId_First(hwId, orderByComparator);
 
 		if (vendor != null) {
@@ -1672,9 +1689,8 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByhwId_First(
-		String hwId, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByhwId_First(String hwId,
+		OrderByComparator<Vendor> orderByComparator) {
 		List<Vendor> list = findByhwId(hwId, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -1693,10 +1709,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByhwId_Last(
-			String hwId, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByhwId_Last(String hwId,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByhwId_Last(hwId, orderByComparator);
 
 		if (vendor != null) {
@@ -1723,17 +1738,15 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByhwId_Last(
-		String hwId, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByhwId_Last(String hwId,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countByhwId(hwId);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findByhwId(
-			hwId, count - 1, count, orderByComparator);
+		List<Vendor> list = findByhwId(hwId, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -1752,11 +1765,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findByhwId_PrevAndNext(
-			long vendorId, String hwId,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findByhwId_PrevAndNext(long vendorId, String hwId,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		hwId = Objects.toString(hwId, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -1768,33 +1779,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getByhwId_PrevAndNext(
-				session, vendor, hwId, orderByComparator, true);
+			array[0] = getByhwId_PrevAndNext(session, vendor, hwId,
+					orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getByhwId_PrevAndNext(
-				session, vendor, hwId, orderByComparator, false);
+			array[2] = getByhwId_PrevAndNext(session, vendor, hwId,
+					orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getByhwId_PrevAndNext(
-		Session session, Vendor vendor, String hwId,
-		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
+	protected Vendor getByhwId_PrevAndNext(Session session, Vendor vendor,
+		String hwId, OrderByComparator<Vendor> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -1815,8 +1825,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -1888,10 +1897,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -1912,9 +1921,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeByhwId(String hwId) {
-		for (Vendor vendor :
-				findByhwId(hwId, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findByhwId(hwId, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -1929,9 +1937,9 @@ public class VendorPersistenceImpl
 	public int countByhwId(String hwId) {
 		hwId = Objects.toString(hwId, "");
 
-		FinderPath finderPath = _finderPathCountByhwId;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_HWID;
 
-		Object[] finderArgs = new Object[] {hwId};
+		Object[] finderArgs = new Object[] { hwId };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -1970,10 +1978,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -1983,14 +1991,27 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
+	private static final String _FINDER_COLUMN_HWID_HWID_1 = "vendor.hwId IS NULL";
 	private static final String _FINDER_COLUMN_HWID_HWID_2 = "vendor.hwId = ?";
-
-	private static final String _FINDER_COLUMN_HWID_HWID_3 =
-		"(vendor.hwId IS NULL OR vendor.hwId = '')";
-
-	private FinderPath _finderPathWithPaginationFindByname;
-	private FinderPath _finderPathWithoutPaginationFindByname;
-	private FinderPath _finderPathCountByname;
+	private static final String _FINDER_COLUMN_HWID_HWID_3 = "(vendor.hwId IS NULL OR vendor.hwId = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_NAME = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByname",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByname",
+			new String[] { String.class.getName() },
+			VendorModelImpl.NAME_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_NAME = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByname",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where name = &#63;.
@@ -2007,7 +2028,7 @@ public class VendorPersistenceImpl
 	 * Returns a range of all the vendors where name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
@@ -2024,7 +2045,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
@@ -2034,10 +2055,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByname(
-		String name, int start, int end,
+	public List<Vendor> findByname(String name, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		return findByname(name, start, end, orderByComparator, true);
 	}
 
@@ -2045,44 +2064,41 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where name = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByname(
-		String name, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findByname(String name, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		name = Objects.toString(name, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByname;
-				finderArgs = new Object[] {name};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME;
+			finderArgs = new Object[] { name };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByname;
-			finderArgs = new Object[] {name, start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_NAME;
+			finderArgs = new Object[] { name, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -2099,8 +2115,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -2120,10 +2136,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -2142,21 +2159,27 @@ public class VendorPersistenceImpl
 					qPos.add(name);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -2175,10 +2198,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByname_First(
-			String name, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByname_First(String name,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByname_First(name, orderByComparator);
 
 		if (vendor != null) {
@@ -2205,9 +2227,8 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByname_First(
-		String name, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByname_First(String name,
+		OrderByComparator<Vendor> orderByComparator) {
 		List<Vendor> list = findByname(name, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -2226,10 +2247,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByname_Last(
-			String name, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByname_Last(String name,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByname_Last(name, orderByComparator);
 
 		if (vendor != null) {
@@ -2256,17 +2276,15 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByname_Last(
-		String name, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByname_Last(String name,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countByname(name);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findByname(
-			name, count - 1, count, orderByComparator);
+		List<Vendor> list = findByname(name, count - 1, count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -2285,11 +2303,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findByname_PrevAndNext(
-			long vendorId, String name,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findByname_PrevAndNext(long vendorId, String name,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		name = Objects.toString(name, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -2301,33 +2317,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getByname_PrevAndNext(
-				session, vendor, name, orderByComparator, true);
+			array[0] = getByname_PrevAndNext(session, vendor, name,
+					orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getByname_PrevAndNext(
-				session, vendor, name, orderByComparator, false);
+			array[2] = getByname_PrevAndNext(session, vendor, name,
+					orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getByname_PrevAndNext(
-		Session session, Vendor vendor, String name,
-		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
+	protected Vendor getByname_PrevAndNext(Session session, Vendor vendor,
+		String name, OrderByComparator<Vendor> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -2348,8 +2363,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -2421,10 +2435,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -2445,9 +2459,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeByname(String name) {
-		for (Vendor vendor :
-				findByname(name, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findByname(name, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -2462,9 +2475,9 @@ public class VendorPersistenceImpl
 	public int countByname(String name) {
 		name = Objects.toString(name, "");
 
-		FinderPath finderPath = _finderPathCountByname;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_NAME;
 
-		Object[] finderArgs = new Object[] {name};
+		Object[] finderArgs = new Object[] { name };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -2503,10 +2516,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -2516,14 +2529,29 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
+	private static final String _FINDER_COLUMN_NAME_NAME_1 = "vendor.name IS NULL";
 	private static final String _FINDER_COLUMN_NAME_NAME_2 = "vendor.name = ?";
-
-	private static final String _FINDER_COLUMN_NAME_NAME_3 =
-		"(vendor.name IS NULL OR vendor.name = '')";
-
-	private FinderPath _finderPathWithPaginationFindBydescription;
-	private FinderPath _finderPathWithoutPaginationFindBydescription;
-	private FinderPath _finderPathCountBydescription;
+	private static final String _FINDER_COLUMN_NAME_NAME_3 = "(vendor.name IS NULL OR vendor.name = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_DESCRIPTION =
+		new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBydescription",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION =
+		new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBydescription",
+			new String[] { String.class.getName() },
+			VendorModelImpl.DESCRIPTION_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_DESCRIPTION = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBydescription",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where description = &#63;.
@@ -2533,15 +2561,15 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public List<Vendor> findBydescription(String description) {
-		return findBydescription(
-			description, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findBydescription(description, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the vendors where description = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param description the description
@@ -2550,9 +2578,7 @@ public class VendorPersistenceImpl
 	 * @return the range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBydescription(
-		String description, int start, int end) {
-
+	public List<Vendor> findBydescription(String description, int start, int end) {
 		return findBydescription(description, start, end, null);
 	}
 
@@ -2560,7 +2586,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where description = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param description the description
@@ -2570,58 +2596,52 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBydescription(
-		String description, int start, int end,
-		OrderByComparator<Vendor> orderByComparator) {
-
-		return findBydescription(
-			description, start, end, orderByComparator, true);
+	public List<Vendor> findBydescription(String description, int start,
+		int end, OrderByComparator<Vendor> orderByComparator) {
+		return findBydescription(description, start, end, orderByComparator,
+			true);
 	}
 
 	/**
 	 * Returns an ordered range of all the vendors where description = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param description the description
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBydescription(
-		String description, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findBydescription(String description, int start,
+		int end, OrderByComparator<Vendor> orderByComparator,
+		boolean retrieveFromCache) {
 		description = Objects.toString(description, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindBydescription;
-				finderArgs = new Object[] {description};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION;
+			finderArgs = new Object[] { description };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindBydescription;
-			finderArgs = new Object[] {
-				description, start, end, orderByComparator
-			};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_DESCRIPTION;
+			finderArgs = new Object[] { description, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -2638,8 +2658,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -2659,10 +2679,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -2681,21 +2702,27 @@ public class VendorPersistenceImpl
 					qPos.add(description);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -2714,12 +2741,10 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBydescription_First(
-			String description, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBydescription_First(String description,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
-		Vendor vendor = fetchBydescription_First(
-			description, orderByComparator);
+		Vendor vendor = fetchBydescription_First(description, orderByComparator);
 
 		if (vendor != null) {
 			return vendor;
@@ -2745,11 +2770,10 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBydescription_First(
-		String description, OrderByComparator<Vendor> orderByComparator) {
-
-		List<Vendor> list = findBydescription(
-			description, 0, 1, orderByComparator);
+	public Vendor fetchBydescription_First(String description,
+		OrderByComparator<Vendor> orderByComparator) {
+		List<Vendor> list = findBydescription(description, 0, 1,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -2767,10 +2791,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBydescription_Last(
-			String description, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBydescription_Last(String description,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchBydescription_Last(description, orderByComparator);
 
 		if (vendor != null) {
@@ -2797,17 +2820,16 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBydescription_Last(
-		String description, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchBydescription_Last(String description,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countBydescription(description);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findBydescription(
-			description, count - 1, count, orderByComparator);
+		List<Vendor> list = findBydescription(description, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -2826,11 +2848,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findBydescription_PrevAndNext(
-			long vendorId, String description,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findBydescription_PrevAndNext(long vendorId,
+		String description, OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		description = Objects.toString(description, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -2842,33 +2862,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getBydescription_PrevAndNext(
-				session, vendor, description, orderByComparator, true);
+			array[0] = getBydescription_PrevAndNext(session, vendor,
+					description, orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getBydescription_PrevAndNext(
-				session, vendor, description, orderByComparator, false);
+			array[2] = getBydescription_PrevAndNext(session, vendor,
+					description, orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getBydescription_PrevAndNext(
-		Session session, Vendor vendor, String description,
+	protected Vendor getBydescription_PrevAndNext(Session session,
+		Vendor vendor, String description,
 		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -2889,8 +2908,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -2962,10 +2980,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -2986,10 +3004,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeBydescription(String description) {
-		for (Vendor vendor :
-				findBydescription(
-					description, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findBydescription(description, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -3004,9 +3020,9 @@ public class VendorPersistenceImpl
 	public int countBydescription(String description) {
 		description = Objects.toString(description, "");
 
-		FinderPath finderPath = _finderPathCountBydescription;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_DESCRIPTION;
 
-		Object[] finderArgs = new Object[] {description};
+		Object[] finderArgs = new Object[] { description };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -3045,10 +3061,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -3058,15 +3074,28 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_DESCRIPTION_DESCRIPTION_2 =
-		"vendor.description = ?";
-
-	private static final String _FINDER_COLUMN_DESCRIPTION_DESCRIPTION_3 =
-		"(vendor.description IS NULL OR vendor.description = '')";
-
-	private FinderPath _finderPathWithPaginationFindBymetadata;
-	private FinderPath _finderPathWithoutPaginationFindBymetadata;
-	private FinderPath _finderPathCountBymetadata;
+	private static final String _FINDER_COLUMN_DESCRIPTION_DESCRIPTION_1 = "vendor.description IS NULL";
+	private static final String _FINDER_COLUMN_DESCRIPTION_DESCRIPTION_2 = "vendor.description = ?";
+	private static final String _FINDER_COLUMN_DESCRIPTION_DESCRIPTION_3 = "(vendor.description IS NULL OR vendor.description = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_METADATA = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBymetadata",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA =
+		new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBymetadata",
+			new String[] { String.class.getName() },
+			VendorModelImpl.METADATA_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_METADATA = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBymetadata",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where metadata = &#63;.
@@ -3076,15 +3105,15 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public List<Vendor> findBymetadata(String metadata) {
-		return findBymetadata(
-			metadata, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findBymetadata(metadata, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
+			null);
 	}
 
 	/**
 	 * Returns a range of all the vendors where metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param metadata the metadata
@@ -3101,7 +3130,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param metadata the metadata
@@ -3111,10 +3140,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBymetadata(
-		String metadata, int start, int end,
+	public List<Vendor> findBymetadata(String metadata, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		return findBymetadata(metadata, start, end, orderByComparator, true);
 	}
 
@@ -3122,44 +3149,41 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param metadata the metadata
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBymetadata(
-		String metadata, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findBymetadata(String metadata, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		metadata = Objects.toString(metadata, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindBymetadata;
-				finderArgs = new Object[] {metadata};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA;
+			finderArgs = new Object[] { metadata };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindBymetadata;
-			finderArgs = new Object[] {metadata, start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_METADATA;
+			finderArgs = new Object[] { metadata, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -3176,8 +3200,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -3197,10 +3221,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -3219,21 +3244,27 @@ public class VendorPersistenceImpl
 					qPos.add(metadata);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -3252,10 +3283,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBymetadata_First(
-			String metadata, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBymetadata_First(String metadata,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchBymetadata_First(metadata, orderByComparator);
 
 		if (vendor != null) {
@@ -3282,9 +3312,8 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBymetadata_First(
-		String metadata, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchBymetadata_First(String metadata,
+		OrderByComparator<Vendor> orderByComparator) {
 		List<Vendor> list = findBymetadata(metadata, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -3303,10 +3332,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBymetadata_Last(
-			String metadata, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBymetadata_Last(String metadata,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchBymetadata_Last(metadata, orderByComparator);
 
 		if (vendor != null) {
@@ -3333,17 +3361,16 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBymetadata_Last(
-		String metadata, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchBymetadata_Last(String metadata,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countBymetadata(metadata);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findBymetadata(
-			metadata, count - 1, count, orderByComparator);
+		List<Vendor> list = findBymetadata(metadata, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3362,11 +3389,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findBymetadata_PrevAndNext(
-			long vendorId, String metadata,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findBymetadata_PrevAndNext(long vendorId, String metadata,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		metadata = Objects.toString(metadata, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -3378,33 +3403,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getBymetadata_PrevAndNext(
-				session, vendor, metadata, orderByComparator, true);
+			array[0] = getBymetadata_PrevAndNext(session, vendor, metadata,
+					orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getBymetadata_PrevAndNext(
-				session, vendor, metadata, orderByComparator, false);
+			array[2] = getBymetadata_PrevAndNext(session, vendor, metadata,
+					orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getBymetadata_PrevAndNext(
-		Session session, Vendor vendor, String metadata,
-		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
+	protected Vendor getBymetadata_PrevAndNext(Session session, Vendor vendor,
+		String metadata, OrderByComparator<Vendor> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -3425,8 +3449,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -3498,10 +3521,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -3522,10 +3545,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeBymetadata(String metadata) {
-		for (Vendor vendor :
-				findBymetadata(
-					metadata, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findBymetadata(metadata, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -3540,9 +3561,9 @@ public class VendorPersistenceImpl
 	public int countBymetadata(String metadata) {
 		metadata = Objects.toString(metadata, "");
 
-		FinderPath finderPath = _finderPathCountBymetadata;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_METADATA;
 
-		Object[] finderArgs = new Object[] {metadata};
+		Object[] finderArgs = new Object[] { metadata };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -3581,10 +3602,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -3594,15 +3615,28 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_METADATA_METADATA_2 =
-		"vendor.metadata = ?";
-
-	private static final String _FINDER_COLUMN_METADATA_METADATA_3 =
-		"(vendor.metadata IS NULL OR vendor.metadata = '')";
-
-	private FinderPath _finderPathWithPaginationFindBywebsite;
-	private FinderPath _finderPathWithoutPaginationFindBywebsite;
-	private FinderPath _finderPathCountBywebsite;
+	private static final String _FINDER_COLUMN_METADATA_METADATA_1 = "vendor.metadata IS NULL";
+	private static final String _FINDER_COLUMN_METADATA_METADATA_2 = "vendor.metadata = ?";
+	private static final String _FINDER_COLUMN_METADATA_METADATA_3 = "(vendor.metadata IS NULL OR vendor.metadata = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_WEBSITE = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBywebsite",
+			new String[] {
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE =
+		new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBywebsite",
+			new String[] { String.class.getName() },
+			VendorModelImpl.WEBSITE_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_WEBSITE = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBywebsite",
+			new String[] { String.class.getName() });
 
 	/**
 	 * Returns all the vendors where website = &#63;.
@@ -3612,15 +3646,14 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public List<Vendor> findBywebsite(String website) {
-		return findBywebsite(
-			website, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
+		return findBywebsite(website, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the vendors where website = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param website the website
@@ -3637,7 +3670,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where website = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param website the website
@@ -3647,10 +3680,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBywebsite(
-		String website, int start, int end,
+	public List<Vendor> findBywebsite(String website, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
 		return findBywebsite(website, start, end, orderByComparator, true);
 	}
 
@@ -3658,44 +3689,41 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where website = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param website the website
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findBywebsite(
-		String website, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findBywebsite(String website, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		website = Objects.toString(website, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindBywebsite;
-				finderArgs = new Object[] {website};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE;
+			finderArgs = new Object[] { website };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindBywebsite;
-			finderArgs = new Object[] {website, start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_WEBSITE;
+			finderArgs = new Object[] { website, start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
@@ -3712,8 +3740,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					3 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(3 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(3);
@@ -3733,10 +3761,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -3755,21 +3784,27 @@ public class VendorPersistenceImpl
 					qPos.add(website);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -3788,10 +3823,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBywebsite_First(
-			String website, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBywebsite_First(String website,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchBywebsite_First(website, orderByComparator);
 
 		if (vendor != null) {
@@ -3818,9 +3852,8 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBywebsite_First(
-		String website, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchBywebsite_First(String website,
+		OrderByComparator<Vendor> orderByComparator) {
 		List<Vendor> list = findBywebsite(website, 0, 1, orderByComparator);
 
 		if (!list.isEmpty()) {
@@ -3839,10 +3872,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findBywebsite_Last(
-			String website, OrderByComparator<Vendor> orderByComparator)
+	public Vendor findBywebsite_Last(String website,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchBywebsite_Last(website, orderByComparator);
 
 		if (vendor != null) {
@@ -3869,17 +3901,16 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchBywebsite_Last(
-		String website, OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchBywebsite_Last(String website,
+		OrderByComparator<Vendor> orderByComparator) {
 		int count = countBywebsite(website);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findBywebsite(
-			website, count - 1, count, orderByComparator);
+		List<Vendor> list = findBywebsite(website, count - 1, count,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -3898,11 +3929,9 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findBywebsite_PrevAndNext(
-			long vendorId, String website,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findBywebsite_PrevAndNext(long vendorId, String website,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		website = Objects.toString(website, "");
 
 		Vendor vendor = findByPrimaryKey(vendorId);
@@ -3914,33 +3943,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getBywebsite_PrevAndNext(
-				session, vendor, website, orderByComparator, true);
+			array[0] = getBywebsite_PrevAndNext(session, vendor, website,
+					orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getBywebsite_PrevAndNext(
-				session, vendor, website, orderByComparator, false);
+			array[2] = getBywebsite_PrevAndNext(session, vendor, website,
+					orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getBywebsite_PrevAndNext(
-		Session session, Vendor vendor, String website,
-		OrderByComparator<Vendor> orderByComparator, boolean previous) {
-
+	protected Vendor getBywebsite_PrevAndNext(Session session, Vendor vendor,
+		String website, OrderByComparator<Vendor> orderByComparator,
+		boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				4 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(4 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -3961,8 +3989,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -4034,10 +4061,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -4058,10 +4085,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeBywebsite(String website) {
-		for (Vendor vendor :
-				findBywebsite(
-					website, QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findBywebsite(website, QueryUtil.ALL_POS,
+				QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -4076,9 +4101,9 @@ public class VendorPersistenceImpl
 	public int countBywebsite(String website) {
 		website = Objects.toString(website, "");
 
-		FinderPath finderPath = _finderPathCountBywebsite;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_WEBSITE;
 
-		Object[] finderArgs = new Object[] {website};
+		Object[] finderArgs = new Object[] { website };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -4117,10 +4142,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -4130,15 +4155,36 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_WEBSITE_WEBSITE_2 =
-		"vendor.website = ?";
-
-	private static final String _FINDER_COLUMN_WEBSITE_WEBSITE_3 =
-		"(vendor.website IS NULL OR vendor.website = '')";
-
-	private FinderPath _finderPathWithPaginationFindByndm;
-	private FinderPath _finderPathWithoutPaginationFindByndm;
-	private FinderPath _finderPathCountByndm;
+	private static final String _FINDER_COLUMN_WEBSITE_WEBSITE_1 = "vendor.website IS NULL";
+	private static final String _FINDER_COLUMN_WEBSITE_WEBSITE_2 = "vendor.website = ?";
+	private static final String _FINDER_COLUMN_WEBSITE_WEBSITE_3 = "(vendor.website IS NULL OR vendor.website = '')";
+	public static final FinderPath FINDER_PATH_WITH_PAGINATION_FIND_BY_NDM = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByndm",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				String.class.getName(),
+				
+			Integer.class.getName(), Integer.class.getName(),
+				OrderByComparator.class.getName()
+			});
+	public static final FinderPath FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByndm",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				String.class.getName()
+			},
+			VendorModelImpl.NAME_COLUMN_BITMASK |
+			VendorModelImpl.DESCRIPTION_COLUMN_BITMASK |
+			VendorModelImpl.METADATA_COLUMN_BITMASK);
+	public static final FinderPath FINDER_PATH_COUNT_BY_NDM = new FinderPath(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
+			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByndm",
+			new String[] {
+				String.class.getName(), String.class.getName(),
+				String.class.getName()
+			});
 
 	/**
 	 * Returns all the vendors where name = &#63; and description = &#63; and metadata = &#63;.
@@ -4149,19 +4195,17 @@ public class VendorPersistenceImpl
 	 * @return the matching vendors
 	 */
 	@Override
-	public List<Vendor> findByndm(
-		String name, String description, String metadata) {
-
-		return findByndm(
-			name, description, metadata, QueryUtil.ALL_POS, QueryUtil.ALL_POS,
-			null);
+	public List<Vendor> findByndm(String name, String description,
+		String metadata) {
+		return findByndm(name, description, metadata, QueryUtil.ALL_POS,
+			QueryUtil.ALL_POS, null);
 	}
 
 	/**
 	 * Returns a range of all the vendors where name = &#63; and description = &#63; and metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
@@ -4172,9 +4216,8 @@ public class VendorPersistenceImpl
 	 * @return the range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByndm(
-		String name, String description, String metadata, int start, int end) {
-
+	public List<Vendor> findByndm(String name, String description,
+		String metadata, int start, int end) {
 		return findByndm(name, description, metadata, start, end, null);
 	}
 
@@ -4182,7 +4225,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors where name = &#63; and description = &#63; and metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
@@ -4194,19 +4237,18 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByndm(
-		String name, String description, String metadata, int start, int end,
+	public List<Vendor> findByndm(String name, String description,
+		String metadata, int start, int end,
 		OrderByComparator<Vendor> orderByComparator) {
-
-		return findByndm(
-			name, description, metadata, start, end, orderByComparator, true);
+		return findByndm(name, description, metadata, start, end,
+			orderByComparator, true);
 	}
 
 	/**
 	 * Returns an ordered range of all the vendors where name = &#63; and description = &#63; and metadata = &#63;.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param name the name
@@ -4215,48 +4257,47 @@ public class VendorPersistenceImpl
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of matching vendors
 	 */
 	@Override
-	public List<Vendor> findByndm(
-		String name, String description, String metadata, int start, int end,
-		OrderByComparator<Vendor> orderByComparator, boolean useFinderCache) {
-
+	public List<Vendor> findByndm(String name, String description,
+		String metadata, int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
 		name = Objects.toString(name, "");
 		description = Objects.toString(description, "");
 		metadata = Objects.toString(metadata, "");
 
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindByndm;
-				finderArgs = new Object[] {name, description, metadata};
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM;
+			finderArgs = new Object[] { name, description, metadata };
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindByndm;
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_BY_NDM;
 			finderArgs = new Object[] {
-				name, description, metadata, start, end, orderByComparator
-			};
+					name, description, metadata,
+					
+					start, end, orderByComparator
+				};
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 
 			if ((list != null) && !list.isEmpty()) {
 				for (Vendor vendor : list) {
 					if (!name.equals(vendor.getName()) ||
-						!description.equals(vendor.getDescription()) ||
-						!metadata.equals(vendor.getMetadata())) {
-
+							!description.equals(vendor.getDescription()) ||
+							!metadata.equals(vendor.getMetadata())) {
 						list = null;
 
 						break;
@@ -4269,8 +4310,8 @@ public class VendorPersistenceImpl
 			StringBundler query = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					5 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(5 +
+						(orderByComparator.getOrderByFields().length * 2));
 			}
 			else {
 				query = new StringBundler(5);
@@ -4312,10 +4353,11 @@ public class VendorPersistenceImpl
 			}
 
 			if (orderByComparator != null) {
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 			}
-			else {
+			else
+			 if (pagination) {
 				query.append(VendorModelImpl.ORDER_BY_JPQL);
 			}
 
@@ -4342,21 +4384,27 @@ public class VendorPersistenceImpl
 					qPos.add(metadata);
 				}
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -4377,13 +4425,11 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByndm_First(
-			String name, String description, String metadata,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByndm_First(String name, String description,
+		String metadata, OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
-		Vendor vendor = fetchByndm_First(
-			name, description, metadata, orderByComparator);
+		Vendor vendor = fetchByndm_First(name, description, metadata,
+				orderByComparator);
 
 		if (vendor != null) {
 			return vendor;
@@ -4417,12 +4463,10 @@ public class VendorPersistenceImpl
 	 * @return the first matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByndm_First(
-		String name, String description, String metadata,
-		OrderByComparator<Vendor> orderByComparator) {
-
-		List<Vendor> list = findByndm(
-			name, description, metadata, 0, 1, orderByComparator);
+	public Vendor fetchByndm_First(String name, String description,
+		String metadata, OrderByComparator<Vendor> orderByComparator) {
+		List<Vendor> list = findByndm(name, description, metadata, 0, 1,
+				orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -4442,13 +4486,11 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor findByndm_Last(
-			String name, String description, String metadata,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor findByndm_Last(String name, String description,
+		String metadata, OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
-		Vendor vendor = fetchByndm_Last(
-			name, description, metadata, orderByComparator);
+		Vendor vendor = fetchByndm_Last(name, description, metadata,
+				orderByComparator);
 
 		if (vendor != null) {
 			return vendor;
@@ -4482,18 +4524,16 @@ public class VendorPersistenceImpl
 	 * @return the last matching vendor, or <code>null</code> if a matching vendor could not be found
 	 */
 	@Override
-	public Vendor fetchByndm_Last(
-		String name, String description, String metadata,
-		OrderByComparator<Vendor> orderByComparator) {
-
+	public Vendor fetchByndm_Last(String name, String description,
+		String metadata, OrderByComparator<Vendor> orderByComparator) {
 		int count = countByndm(name, description, metadata);
 
 		if (count == 0) {
 			return null;
 		}
 
-		List<Vendor> list = findByndm(
-			name, description, metadata, count - 1, count, orderByComparator);
+		List<Vendor> list = findByndm(name, description, metadata, count - 1,
+				count, orderByComparator);
 
 		if (!list.isEmpty()) {
 			return list.get(0);
@@ -4514,11 +4554,10 @@ public class VendorPersistenceImpl
 	 * @throws NoSuchVendorException if a vendor with the primary key could not be found
 	 */
 	@Override
-	public Vendor[] findByndm_PrevAndNext(
-			long vendorId, String name, String description, String metadata,
-			OrderByComparator<Vendor> orderByComparator)
+	public Vendor[] findByndm_PrevAndNext(long vendorId, String name,
+		String description, String metadata,
+		OrderByComparator<Vendor> orderByComparator)
 		throws NoSuchVendorException {
-
 		name = Objects.toString(name, "");
 		description = Objects.toString(description, "");
 		metadata = Objects.toString(metadata, "");
@@ -4532,36 +4571,32 @@ public class VendorPersistenceImpl
 
 			Vendor[] array = new VendorImpl[3];
 
-			array[0] = getByndm_PrevAndNext(
-				session, vendor, name, description, metadata, orderByComparator,
-				true);
+			array[0] = getByndm_PrevAndNext(session, vendor, name, description,
+					metadata, orderByComparator, true);
 
 			array[1] = vendor;
 
-			array[2] = getByndm_PrevAndNext(
-				session, vendor, name, description, metadata, orderByComparator,
-				false);
+			array[2] = getByndm_PrevAndNext(session, vendor, name, description,
+					metadata, orderByComparator, false);
 
 			return array;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
 		}
 	}
 
-	protected Vendor getByndm_PrevAndNext(
-		Session session, Vendor vendor, String name, String description,
-		String metadata, OrderByComparator<Vendor> orderByComparator,
-		boolean previous) {
-
+	protected Vendor getByndm_PrevAndNext(Session session, Vendor vendor,
+		String name, String description, String metadata,
+		OrderByComparator<Vendor> orderByComparator, boolean previous) {
 		StringBundler query = null;
 
 		if (orderByComparator != null) {
-			query = new StringBundler(
-				6 + (orderByComparator.getOrderByConditionFields().length * 3) +
+			query = new StringBundler(6 +
+					(orderByComparator.getOrderByConditionFields().length * 3) +
 					(orderByComparator.getOrderByFields().length * 3));
 		}
 		else {
@@ -4604,8 +4639,7 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			String[] orderByConditionFields =
-				orderByComparator.getOrderByConditionFields();
+			String[] orderByConditionFields = orderByComparator.getOrderByConditionFields();
 
 			if (orderByConditionFields.length > 0) {
 				query.append(WHERE_AND);
@@ -4685,10 +4719,10 @@ public class VendorPersistenceImpl
 		}
 
 		if (orderByComparator != null) {
-			for (Object orderByConditionValue :
-					orderByComparator.getOrderByConditionValues(vendor)) {
+			Object[] values = orderByComparator.getOrderByConditionValues(vendor);
 
-				qPos.add(orderByConditionValue);
+			for (Object value : values) {
+				qPos.add(value);
 			}
 		}
 
@@ -4711,11 +4745,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void removeByndm(String name, String description, String metadata) {
-		for (Vendor vendor :
-				findByndm(
-					name, description, metadata, QueryUtil.ALL_POS,
-					QueryUtil.ALL_POS, null)) {
-
+		for (Vendor vendor : findByndm(name, description, metadata,
+				QueryUtil.ALL_POS, QueryUtil.ALL_POS, null)) {
 			remove(vendor);
 		}
 	}
@@ -4734,9 +4765,9 @@ public class VendorPersistenceImpl
 		description = Objects.toString(description, "");
 		metadata = Objects.toString(metadata, "");
 
-		FinderPath finderPath = _finderPathCountByndm;
+		FinderPath finderPath = FINDER_PATH_COUNT_BY_NDM;
 
-		Object[] finderArgs = new Object[] {name, description, metadata};
+		Object[] finderArgs = new Object[] { name, description, metadata };
 
 		Long count = (Long)finderCache.getResult(finderPath, finderArgs, this);
 
@@ -4805,10 +4836,10 @@ public class VendorPersistenceImpl
 
 				finderCache.putResult(finderPath, finderArgs, count);
 			}
-			catch (Exception exception) {
+			catch (Exception e) {
 				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -4818,42 +4849,34 @@ public class VendorPersistenceImpl
 		return count.intValue();
 	}
 
-	private static final String _FINDER_COLUMN_NDM_NAME_2 =
-		"vendor.name = ? AND ";
-
-	private static final String _FINDER_COLUMN_NDM_NAME_3 =
-		"(vendor.name IS NULL OR vendor.name = '') AND ";
-
-	private static final String _FINDER_COLUMN_NDM_DESCRIPTION_2 =
-		"vendor.description = ? AND ";
-
-	private static final String _FINDER_COLUMN_NDM_DESCRIPTION_3 =
-		"(vendor.description IS NULL OR vendor.description = '') AND ";
-
-	private static final String _FINDER_COLUMN_NDM_METADATA_2 =
-		"vendor.metadata = ?";
-
-	private static final String _FINDER_COLUMN_NDM_METADATA_3 =
-		"(vendor.metadata IS NULL OR vendor.metadata = '')";
+	private static final String _FINDER_COLUMN_NDM_NAME_1 = "vendor.name IS NULL AND ";
+	private static final String _FINDER_COLUMN_NDM_NAME_2 = "vendor.name = ? AND ";
+	private static final String _FINDER_COLUMN_NDM_NAME_3 = "(vendor.name IS NULL OR vendor.name = '') AND ";
+	private static final String _FINDER_COLUMN_NDM_DESCRIPTION_1 = "vendor.description IS NULL AND ";
+	private static final String _FINDER_COLUMN_NDM_DESCRIPTION_2 = "vendor.description = ? AND ";
+	private static final String _FINDER_COLUMN_NDM_DESCRIPTION_3 = "(vendor.description IS NULL OR vendor.description = '') AND ";
+	private static final String _FINDER_COLUMN_NDM_METADATA_1 = "vendor.metadata IS NULL";
+	private static final String _FINDER_COLUMN_NDM_METADATA_2 = "vendor.metadata = ?";
+	private static final String _FINDER_COLUMN_NDM_METADATA_3 = "(vendor.metadata IS NULL OR vendor.metadata = '')";
 
 	public VendorPersistenceImpl() {
 		setModelClass(Vendor.class);
 
-		Map<String, String> dbColumnNames = new HashMap<String, String>();
-
-		dbColumnNames.put("uuid", "uuid_");
-
 		try {
 			Field field = BasePersistenceImpl.class.getDeclaredField(
-				"_dbColumnNames");
+					"_dbColumnNames");
 
 			field.setAccessible(true);
 
+			Map<String, String> dbColumnNames = new HashMap<String, String>();
+
+			dbColumnNames.put("uuid", "uuid_");
+
 			field.set(this, dbColumnNames);
 		}
-		catch (Exception exception) {
+		catch (Exception e) {
 			if (_log.isDebugEnabled()) {
-				_log.debug(exception, exception);
+				_log.debug(e, e);
 			}
 		}
 	}
@@ -4865,13 +4888,11 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public void cacheResult(Vendor vendor) {
-		entityCache.putResult(
-			VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-			vendor.getPrimaryKey(), vendor);
+		entityCache.putResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorImpl.class, vendor.getPrimaryKey(), vendor);
 
-		finderCache.putResult(
-			_finderPathFetchByUUID_G,
-			new Object[] {vendor.getUuid(), vendor.getGroupId()}, vendor);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G,
+			new Object[] { vendor.getUuid(), vendor.getGroupId() }, vendor);
 
 		vendor.resetOriginalValues();
 	}
@@ -4884,10 +4905,8 @@ public class VendorPersistenceImpl
 	@Override
 	public void cacheResult(List<Vendor> vendors) {
 		for (Vendor vendor : vendors) {
-			if (entityCache.getResult(
-					VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-					vendor.getPrimaryKey()) == null) {
-
+			if (entityCache.getResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+						VendorImpl.class, vendor.getPrimaryKey()) == null) {
 				cacheResult(vendor);
 			}
 			else {
@@ -4900,7 +4919,7 @@ public class VendorPersistenceImpl
 	 * Clears the cache for all vendors.
 	 *
 	 * <p>
-	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
@@ -4916,14 +4935,13 @@ public class VendorPersistenceImpl
 	 * Clears the cache for the vendor.
 	 *
 	 * <p>
-	 * The <code>EntityCache</code> and <code>FinderCache</code> are both cleared by this method.
+	 * The {@link EntityCache} and {@link FinderCache} are both cleared by this method.
 	 * </p>
 	 */
 	@Override
 	public void clearCache(Vendor vendor) {
-		entityCache.removeResult(
-			VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-			vendor.getPrimaryKey());
+		entityCache.removeResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorImpl.class, vendor.getPrimaryKey());
 
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
@@ -4937,59 +4955,44 @@ public class VendorPersistenceImpl
 		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 
 		for (Vendor vendor : vendors) {
-			entityCache.removeResult(
-				VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-				vendor.getPrimaryKey());
+			entityCache.removeResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+				VendorImpl.class, vendor.getPrimaryKey());
 
 			clearUniqueFindersCache((VendorModelImpl)vendor, true);
 		}
 	}
 
-	public void clearCache(Set<Serializable> primaryKeys) {
-		finderCache.clearCache(FINDER_CLASS_NAME_ENTITY);
-		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITH_PAGINATION);
-		finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
-
-		for (Serializable primaryKey : primaryKeys) {
-			entityCache.removeResult(
-				VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-				primaryKey);
-		}
-	}
-
 	protected void cacheUniqueFindersCache(VendorModelImpl vendorModelImpl) {
 		Object[] args = new Object[] {
-			vendorModelImpl.getUuid(), vendorModelImpl.getGroupId()
-		};
-
-		finderCache.putResult(
-			_finderPathCountByUUID_G, args, Long.valueOf(1), false);
-		finderCache.putResult(
-			_finderPathFetchByUUID_G, args, vendorModelImpl, false);
-	}
-
-	protected void clearUniqueFindersCache(
-		VendorModelImpl vendorModelImpl, boolean clearCurrent) {
-
-		if (clearCurrent) {
-			Object[] args = new Object[] {
 				vendorModelImpl.getUuid(), vendorModelImpl.getGroupId()
 			};
 
-			finderCache.removeResult(_finderPathCountByUUID_G, args);
-			finderCache.removeResult(_finderPathFetchByUUID_G, args);
+		finderCache.putResult(FINDER_PATH_COUNT_BY_UUID_G, args,
+			Long.valueOf(1), false);
+		finderCache.putResult(FINDER_PATH_FETCH_BY_UUID_G, args,
+			vendorModelImpl, false);
+	}
+
+	protected void clearUniqueFindersCache(VendorModelImpl vendorModelImpl,
+		boolean clearCurrent) {
+		if (clearCurrent) {
+			Object[] args = new Object[] {
+					vendorModelImpl.getUuid(), vendorModelImpl.getGroupId()
+				};
+
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 
 		if ((vendorModelImpl.getColumnBitmask() &
-			 _finderPathFetchByUUID_G.getColumnBitmask()) != 0) {
-
+				FINDER_PATH_FETCH_BY_UUID_G.getColumnBitmask()) != 0) {
 			Object[] args = new Object[] {
-				vendorModelImpl.getOriginalUuid(),
-				vendorModelImpl.getOriginalGroupId()
-			};
+					vendorModelImpl.getOriginalUuid(),
+					vendorModelImpl.getOriginalGroupId()
+				};
 
-			finderCache.removeResult(_finderPathCountByUUID_G, args);
-			finderCache.removeResult(_finderPathFetchByUUID_G, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_G, args);
+			finderCache.removeResult(FINDER_PATH_FETCH_BY_UUID_G, args);
 		}
 	}
 
@@ -5010,7 +5013,7 @@ public class VendorPersistenceImpl
 
 		vendor.setUuid(uuid);
 
-		vendor.setCompanyId(CompanyThreadLocal.getCompanyId());
+		vendor.setCompanyId(companyProvider.getCompanyId());
 
 		return vendor;
 	}
@@ -5048,17 +5051,17 @@ public class VendorPersistenceImpl
 					_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 				}
 
-				throw new NoSuchVendorException(
-					_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+				throw new NoSuchVendorException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+					primaryKey);
 			}
 
 			return remove(vendor);
 		}
-		catch (NoSuchVendorException noSuchEntityException) {
-			throw noSuchEntityException;
+		catch (NoSuchVendorException nsee) {
+			throw nsee;
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
@@ -5073,16 +5076,16 @@ public class VendorPersistenceImpl
 			session = openSession();
 
 			if (!session.contains(vendor)) {
-				vendor = (Vendor)session.get(
-					VendorImpl.class, vendor.getPrimaryKeyObj());
+				vendor = (Vendor)session.get(VendorImpl.class,
+						vendor.getPrimaryKeyObj());
 			}
 
 			if (vendor != null) {
 				session.delete(vendor);
 			}
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
@@ -5107,12 +5110,12 @@ public class VendorPersistenceImpl
 
 				throw new IllegalArgumentException(
 					"Implement ModelWrapper in vendor proxy " +
-						invocationHandler.getClass());
+					invocationHandler.getClass());
 			}
 
 			throw new IllegalArgumentException(
 				"Implement ModelWrapper in custom Vendor implementation " +
-					vendor.getClass());
+				vendor.getClass());
 		}
 
 		VendorModelImpl vendorModelImpl = (VendorModelImpl)vendor;
@@ -5123,8 +5126,7 @@ public class VendorPersistenceImpl
 			vendor.setUuid(uuid);
 		}
 
-		ServiceContext serviceContext =
-			ServiceContextThreadLocal.getServiceContext();
+		ServiceContext serviceContext = ServiceContextThreadLocal.getServiceContext();
 
 		Date now = new Date();
 
@@ -5160,8 +5162,8 @@ public class VendorPersistenceImpl
 				vendor = (Vendor)session.merge(vendor);
 			}
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
@@ -5172,229 +5174,210 @@ public class VendorPersistenceImpl
 		if (!VendorModelImpl.COLUMN_BITMASK_ENABLED) {
 			finderCache.clearCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 		}
-		else if (isNew) {
-			Object[] args = new Object[] {vendorModelImpl.getUuid()};
+		else
+		 if (isNew) {
+			Object[] args = new Object[] { vendorModelImpl.getUuid() };
 
-			finderCache.removeResult(_finderPathCountByUuid, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindByUuid, args);
-
-			args = new Object[] {
-				vendorModelImpl.getUuid(), vendorModelImpl.getCompanyId()
-			};
-
-			finderCache.removeResult(_finderPathCountByUuid_C, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindByUuid_C, args);
-
-			args = new Object[] {vendorModelImpl.getHwId()};
-
-			finderCache.removeResult(_finderPathCountByhwId, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindByhwId, args);
-
-			args = new Object[] {vendorModelImpl.getName()};
-
-			finderCache.removeResult(_finderPathCountByname, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindByname, args);
-
-			args = new Object[] {vendorModelImpl.getDescription()};
-
-			finderCache.removeResult(_finderPathCountBydescription, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindBydescription, args);
-
-			args = new Object[] {vendorModelImpl.getMetadata()};
-
-			finderCache.removeResult(_finderPathCountBymetadata, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindBymetadata, args);
-
-			args = new Object[] {vendorModelImpl.getWebsite()};
-
-			finderCache.removeResult(_finderPathCountBywebsite, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindBywebsite, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+				args);
 
 			args = new Object[] {
-				vendorModelImpl.getName(), vendorModelImpl.getDescription(),
-				vendorModelImpl.getMetadata()
-			};
-
-			finderCache.removeResult(_finderPathCountByndm, args);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindByndm, args);
-
-			finderCache.removeResult(_finderPathCountAll, FINDER_ARGS_EMPTY);
-			finderCache.removeResult(
-				_finderPathWithoutPaginationFindAll, FINDER_ARGS_EMPTY);
-		}
-		else {
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindByUuid.getColumnBitmask()) !=
-					 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalUuid()
-				};
-
-				finderCache.removeResult(_finderPathCountByUuid, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByUuid, args);
-
-				args = new Object[] {vendorModelImpl.getUuid()};
-
-				finderCache.removeResult(_finderPathCountByUuid, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByUuid, args);
-			}
-
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindByUuid_C.getColumnBitmask()) !=
-					 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalUuid(),
-					vendorModelImpl.getOriginalCompanyId()
-				};
-
-				finderCache.removeResult(_finderPathCountByUuid_C, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByUuid_C, args);
-
-				args = new Object[] {
 					vendorModelImpl.getUuid(), vendorModelImpl.getCompanyId()
 				};
 
-				finderCache.removeResult(_finderPathCountByUuid_C, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByUuid_C, args);
-			}
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+				args);
 
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindByhwId.getColumnBitmask()) !=
-					 0) {
+			args = new Object[] { vendorModelImpl.getHwId() };
 
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalHwId()
-				};
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_HWID, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID,
+				args);
 
-				finderCache.removeResult(_finderPathCountByhwId, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByhwId, args);
+			args = new Object[] { vendorModelImpl.getName() };
 
-				args = new Object[] {vendorModelImpl.getHwId()};
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_NAME, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME,
+				args);
 
-				finderCache.removeResult(_finderPathCountByhwId, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByhwId, args);
-			}
+			args = new Object[] { vendorModelImpl.getDescription() };
 
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindByname.getColumnBitmask()) !=
-					 0) {
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_DESCRIPTION, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION,
+				args);
 
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalName()
-				};
+			args = new Object[] { vendorModelImpl.getMetadata() };
 
-				finderCache.removeResult(_finderPathCountByname, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByname, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_METADATA, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA,
+				args);
 
-				args = new Object[] {vendorModelImpl.getName()};
+			args = new Object[] { vendorModelImpl.getWebsite() };
 
-				finderCache.removeResult(_finderPathCountByname, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByname, args);
-			}
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_WEBSITE, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE,
+				args);
 
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindBydescription.
-					 getColumnBitmask()) != 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalDescription()
-				};
-
-				finderCache.removeResult(_finderPathCountBydescription, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBydescription, args);
-
-				args = new Object[] {vendorModelImpl.getDescription()};
-
-				finderCache.removeResult(_finderPathCountBydescription, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBydescription, args);
-			}
-
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindBymetadata.
-					 getColumnBitmask()) != 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalMetadata()
-				};
-
-				finderCache.removeResult(_finderPathCountBymetadata, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBymetadata, args);
-
-				args = new Object[] {vendorModelImpl.getMetadata()};
-
-				finderCache.removeResult(_finderPathCountBymetadata, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBymetadata, args);
-			}
-
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindBywebsite.
-					 getColumnBitmask()) != 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalWebsite()
-				};
-
-				finderCache.removeResult(_finderPathCountBywebsite, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBywebsite, args);
-
-				args = new Object[] {vendorModelImpl.getWebsite()};
-
-				finderCache.removeResult(_finderPathCountBywebsite, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindBywebsite, args);
-			}
-
-			if ((vendorModelImpl.getColumnBitmask() &
-				 _finderPathWithoutPaginationFindByndm.getColumnBitmask()) !=
-					 0) {
-
-				Object[] args = new Object[] {
-					vendorModelImpl.getOriginalName(),
-					vendorModelImpl.getOriginalDescription(),
-					vendorModelImpl.getOriginalMetadata()
-				};
-
-				finderCache.removeResult(_finderPathCountByndm, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByndm, args);
-
-				args = new Object[] {
+			args = new Object[] {
 					vendorModelImpl.getName(), vendorModelImpl.getDescription(),
 					vendorModelImpl.getMetadata()
 				};
 
-				finderCache.removeResult(_finderPathCountByndm, args);
-				finderCache.removeResult(
-					_finderPathWithoutPaginationFindByndm, args);
+			finderCache.removeResult(FINDER_PATH_COUNT_BY_NDM, args);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM,
+				args);
+
+			finderCache.removeResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY);
+			finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL,
+				FINDER_ARGS_EMPTY);
+		}
+
+		else {
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { vendorModelImpl.getOriginalUuid() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+					args);
+
+				args = new Object[] { vendorModelImpl.getUuid() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						vendorModelImpl.getOriginalUuid(),
+						vendorModelImpl.getOriginalCompanyId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+
+				args = new Object[] {
+						vendorModelImpl.getUuid(),
+						vendorModelImpl.getCompanyId()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_UUID_C, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_UUID_C,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { vendorModelImpl.getOriginalHwId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_HWID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID,
+					args);
+
+				args = new Object[] { vendorModelImpl.getHwId() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_HWID, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_HWID,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] { vendorModelImpl.getOriginalName() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_NAME, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME,
+					args);
+
+				args = new Object[] { vendorModelImpl.getName() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_NAME, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NAME,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						vendorModelImpl.getOriginalDescription()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_DESCRIPTION, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION,
+					args);
+
+				args = new Object[] { vendorModelImpl.getDescription() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_DESCRIPTION, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_DESCRIPTION,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						vendorModelImpl.getOriginalMetadata()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_METADATA, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA,
+					args);
+
+				args = new Object[] { vendorModelImpl.getMetadata() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_METADATA, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_METADATA,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						vendorModelImpl.getOriginalWebsite()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_WEBSITE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE,
+					args);
+
+				args = new Object[] { vendorModelImpl.getWebsite() };
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_WEBSITE, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_WEBSITE,
+					args);
+			}
+
+			if ((vendorModelImpl.getColumnBitmask() &
+					FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM.getColumnBitmask()) != 0) {
+				Object[] args = new Object[] {
+						vendorModelImpl.getOriginalName(),
+						vendorModelImpl.getOriginalDescription(),
+						vendorModelImpl.getOriginalMetadata()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_NDM, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM,
+					args);
+
+				args = new Object[] {
+						vendorModelImpl.getName(),
+						vendorModelImpl.getDescription(),
+						vendorModelImpl.getMetadata()
+					};
+
+				finderCache.removeResult(FINDER_PATH_COUNT_BY_NDM, args);
+				finderCache.removeResult(FINDER_PATH_WITHOUT_PAGINATION_FIND_BY_NDM,
+					args);
 			}
 		}
 
-		entityCache.putResult(
-			VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-			vendor.getPrimaryKey(), vendor, false);
+		entityCache.putResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+			VendorImpl.class, vendor.getPrimaryKey(), vendor, false);
 
 		clearUniqueFindersCache(vendorModelImpl, false);
 		cacheUniqueFindersCache(vendorModelImpl);
@@ -5405,7 +5388,7 @@ public class VendorPersistenceImpl
 	}
 
 	/**
-	 * Returns the vendor with the primary key or throws a <code>com.liferay.portal.kernel.exception.NoSuchModelException</code> if it could not be found.
+	 * Returns the vendor with the primary key or throws a {@link com.liferay.portal.kernel.exception.NoSuchModelException} if it could not be found.
 	 *
 	 * @param primaryKey the primary key of the vendor
 	 * @return the vendor
@@ -5414,7 +5397,6 @@ public class VendorPersistenceImpl
 	@Override
 	public Vendor findByPrimaryKey(Serializable primaryKey)
 		throws NoSuchVendorException {
-
 		Vendor vendor = fetchByPrimaryKey(primaryKey);
 
 		if (vendor == null) {
@@ -5422,15 +5404,15 @@ public class VendorPersistenceImpl
 				_log.debug(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
 			}
 
-			throw new NoSuchVendorException(
-				_NO_SUCH_ENTITY_WITH_PRIMARY_KEY + primaryKey);
+			throw new NoSuchVendorException(_NO_SUCH_ENTITY_WITH_PRIMARY_KEY +
+				primaryKey);
 		}
 
 		return vendor;
 	}
 
 	/**
-	 * Returns the vendor with the primary key or throws a <code>NoSuchVendorException</code> if it could not be found.
+	 * Returns the vendor with the primary key or throws a {@link NoSuchVendorException} if it could not be found.
 	 *
 	 * @param vendorId the primary key of the vendor
 	 * @return the vendor
@@ -5449,8 +5431,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public Vendor fetchByPrimaryKey(Serializable primaryKey) {
-		Serializable serializable = entityCache.getResult(
-			VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class, primaryKey);
+		Serializable serializable = entityCache.getResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+				VendorImpl.class, primaryKey);
 
 		if (serializable == nullModel) {
 			return null;
@@ -5470,17 +5452,15 @@ public class VendorPersistenceImpl
 					cacheResult(vendor);
 				}
 				else {
-					entityCache.putResult(
-						VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-						primaryKey, nullModel);
+					entityCache.putResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+						VendorImpl.class, primaryKey, nullModel);
 				}
 			}
-			catch (Exception exception) {
-				entityCache.removeResult(
-					VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-					primaryKey);
+			catch (Exception e) {
+				entityCache.removeResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+					VendorImpl.class, primaryKey);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -5504,7 +5484,6 @@ public class VendorPersistenceImpl
 	@Override
 	public Map<Serializable, Vendor> fetchByPrimaryKeys(
 		Set<Serializable> primaryKeys) {
-
 		if (primaryKeys.isEmpty()) {
 			return Collections.emptyMap();
 		}
@@ -5528,9 +5507,8 @@ public class VendorPersistenceImpl
 		Set<Serializable> uncachedPrimaryKeys = null;
 
 		for (Serializable primaryKey : primaryKeys) {
-			Serializable serializable = entityCache.getResult(
-				VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-				primaryKey);
+			Serializable serializable = entityCache.getResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+					VendorImpl.class, primaryKey);
 
 			if (serializable != nullModel) {
 				if (serializable == null) {
@@ -5550,8 +5528,8 @@ public class VendorPersistenceImpl
 			return map;
 		}
 
-		StringBundler query = new StringBundler(
-			uncachedPrimaryKeys.size() * 2 + 1);
+		StringBundler query = new StringBundler((uncachedPrimaryKeys.size() * 2) +
+				1);
 
 		query.append(_SQL_SELECT_VENDOR_WHERE_PKS_IN);
 
@@ -5583,13 +5561,12 @@ public class VendorPersistenceImpl
 			}
 
 			for (Serializable primaryKey : uncachedPrimaryKeys) {
-				entityCache.putResult(
-					VendorModelImpl.ENTITY_CACHE_ENABLED, VendorImpl.class,
-					primaryKey, nullModel);
+				entityCache.putResult(VendorModelImpl.ENTITY_CACHE_ENABLED,
+					VendorImpl.class, primaryKey, nullModel);
 			}
 		}
-		catch (Exception exception) {
-			throw processException(exception);
+		catch (Exception e) {
+			throw processException(e);
 		}
 		finally {
 			closeSession(session);
@@ -5612,7 +5589,7 @@ public class VendorPersistenceImpl
 	 * Returns a range of all the vendors.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of vendors
@@ -5628,7 +5605,7 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of vendors
@@ -5637,9 +5614,8 @@ public class VendorPersistenceImpl
 	 * @return the ordered range of vendors
 	 */
 	@Override
-	public List<Vendor> findAll(
-		int start, int end, OrderByComparator<Vendor> orderByComparator) {
-
+	public List<Vendor> findAll(int start, int end,
+		OrderByComparator<Vendor> orderByComparator) {
 		return findAll(start, end, orderByComparator, true);
 	}
 
@@ -5647,41 +5623,38 @@ public class VendorPersistenceImpl
 	 * Returns an ordered range of all the vendors.
 	 *
 	 * <p>
-	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to <code>QueryUtil#ALL_POS</code> will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent, then the query will include the default ORDER BY logic from <code>VendorModelImpl</code>.
+	 * Useful when paginating results. Returns a maximum of <code>end - start</code> instances. <code>start</code> and <code>end</code> are not primary keys, they are indexes in the result set. Thus, <code>0</code> refers to the first result in the set. Setting both <code>start</code> and <code>end</code> to {@link QueryUtil#ALL_POS} will return the full result set. If <code>orderByComparator</code> is specified, then the query will include the given ORDER BY logic. If <code>orderByComparator</code> is absent and pagination is required (<code>start</code> and <code>end</code> are not {@link QueryUtil#ALL_POS}), then the query will include the default ORDER BY logic from {@link VendorModelImpl}. If both <code>orderByComparator</code> and pagination are absent, for performance reasons, the query will not have an ORDER BY clause and the returned result set will be sorted on by the primary key in an ascending order.
 	 * </p>
 	 *
 	 * @param start the lower bound of the range of vendors
 	 * @param end the upper bound of the range of vendors (not inclusive)
 	 * @param orderByComparator the comparator to order the results by (optionally <code>null</code>)
-	 * @param useFinderCache whether to use the finder cache
+	 * @param retrieveFromCache whether to retrieve from the finder cache
 	 * @return the ordered range of vendors
 	 */
 	@Override
-	public List<Vendor> findAll(
-		int start, int end, OrderByComparator<Vendor> orderByComparator,
-		boolean useFinderCache) {
-
+	public List<Vendor> findAll(int start, int end,
+		OrderByComparator<Vendor> orderByComparator, boolean retrieveFromCache) {
+		boolean pagination = true;
 		FinderPath finderPath = null;
 		Object[] finderArgs = null;
 
 		if ((start == QueryUtil.ALL_POS) && (end == QueryUtil.ALL_POS) &&
-			(orderByComparator == null)) {
-
-			if (useFinderCache) {
-				finderPath = _finderPathWithoutPaginationFindAll;
-				finderArgs = FINDER_ARGS_EMPTY;
-			}
+				(orderByComparator == null)) {
+			pagination = false;
+			finderPath = FINDER_PATH_WITHOUT_PAGINATION_FIND_ALL;
+			finderArgs = FINDER_ARGS_EMPTY;
 		}
-		else if (useFinderCache) {
-			finderPath = _finderPathWithPaginationFindAll;
-			finderArgs = new Object[] {start, end, orderByComparator};
+		else {
+			finderPath = FINDER_PATH_WITH_PAGINATION_FIND_ALL;
+			finderArgs = new Object[] { start, end, orderByComparator };
 		}
 
 		List<Vendor> list = null;
 
-		if (useFinderCache) {
-			list = (List<Vendor>)finderCache.getResult(
-				finderPath, finderArgs, this);
+		if (retrieveFromCache) {
+			list = (List<Vendor>)finderCache.getResult(finderPath, finderArgs,
+					this);
 		}
 
 		if (list == null) {
@@ -5689,20 +5662,22 @@ public class VendorPersistenceImpl
 			String sql = null;
 
 			if (orderByComparator != null) {
-				query = new StringBundler(
-					2 + (orderByComparator.getOrderByFields().length * 2));
+				query = new StringBundler(2 +
+						(orderByComparator.getOrderByFields().length * 2));
 
 				query.append(_SQL_SELECT_VENDOR);
 
-				appendOrderByComparator(
-					query, _ORDER_BY_ENTITY_ALIAS, orderByComparator);
+				appendOrderByComparator(query, _ORDER_BY_ENTITY_ALIAS,
+					orderByComparator);
 
 				sql = query.toString();
 			}
 			else {
 				sql = _SQL_SELECT_VENDOR;
 
-				sql = sql.concat(VendorModelImpl.ORDER_BY_JPQL);
+				if (pagination) {
+					sql = sql.concat(VendorModelImpl.ORDER_BY_JPQL);
+				}
 			}
 
 			Session session = null;
@@ -5712,21 +5687,27 @@ public class VendorPersistenceImpl
 
 				Query q = session.createQuery(sql);
 
-				list = (List<Vendor>)QueryUtil.list(
-					q, getDialect(), start, end);
+				if (!pagination) {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end, false);
+
+					Collections.sort(list);
+
+					list = Collections.unmodifiableList(list);
+				}
+				else {
+					list = (List<Vendor>)QueryUtil.list(q, getDialect(), start,
+							end);
+				}
 
 				cacheResult(list);
 
-				if (useFinderCache) {
-					finderCache.putResult(finderPath, finderArgs, list);
-				}
+				finderCache.putResult(finderPath, finderArgs, list);
 			}
-			catch (Exception exception) {
-				if (useFinderCache) {
-					finderCache.removeResult(finderPath, finderArgs);
-				}
+			catch (Exception e) {
+				finderCache.removeResult(finderPath, finderArgs);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -5754,8 +5735,8 @@ public class VendorPersistenceImpl
 	 */
 	@Override
 	public int countAll() {
-		Long count = (Long)finderCache.getResult(
-			_finderPathCountAll, FINDER_ARGS_EMPTY, this);
+		Long count = (Long)finderCache.getResult(FINDER_PATH_COUNT_ALL,
+				FINDER_ARGS_EMPTY, this);
 
 		if (count == null) {
 			Session session = null;
@@ -5767,14 +5748,14 @@ public class VendorPersistenceImpl
 
 				count = (Long)q.uniqueResult();
 
-				finderCache.putResult(
-					_finderPathCountAll, FINDER_ARGS_EMPTY, count);
+				finderCache.putResult(FINDER_PATH_COUNT_ALL, FINDER_ARGS_EMPTY,
+					count);
 			}
-			catch (Exception exception) {
-				finderCache.removeResult(
-					_finderPathCountAll, FINDER_ARGS_EMPTY);
+			catch (Exception e) {
+				finderCache.removeResult(FINDER_PATH_COUNT_ALL,
+					FINDER_ARGS_EMPTY);
 
-				throw processException(exception);
+				throw processException(e);
 			}
 			finally {
 				closeSession(session);
@@ -5798,223 +5779,6 @@ public class VendorPersistenceImpl
 	 * Initializes the vendor persistence.
 	 */
 	public void afterPropertiesSet() {
-		_finderPathWithPaginationFindAll = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findAll", new String[0]);
-
-		_finderPathWithoutPaginationFindAll = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findAll",
-			new String[0]);
-
-		_finderPathCountAll = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countAll",
-			new String[0]);
-
-		_finderPathWithPaginationFindByUuid = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindByUuid = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid",
-			new String[] {String.class.getName()},
-			VendorModelImpl.UUID_COLUMN_BITMASK);
-
-		_finderPathCountByUuid = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid",
-			new String[] {String.class.getName()});
-
-		_finderPathFetchByUUID_G = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_ENTITY, "fetchByUUID_G",
-			new String[] {String.class.getName(), Long.class.getName()},
-			VendorModelImpl.UUID_COLUMN_BITMASK |
-			VendorModelImpl.GROUPID_COLUMN_BITMASK);
-
-		_finderPathCountByUUID_G = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUUID_G",
-			new String[] {String.class.getName(), Long.class.getName()});
-
-		_finderPathWithPaginationFindByUuid_C = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByUuid_C",
-			new String[] {
-				String.class.getName(), Long.class.getName(),
-				Integer.class.getName(), Integer.class.getName(),
-				OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindByUuid_C = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByUuid_C",
-			new String[] {String.class.getName(), Long.class.getName()},
-			VendorModelImpl.UUID_COLUMN_BITMASK |
-			VendorModelImpl.COMPANYID_COLUMN_BITMASK);
-
-		_finderPathCountByUuid_C = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByUuid_C",
-			new String[] {String.class.getName(), Long.class.getName()});
-
-		_finderPathWithPaginationFindByhwId = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByhwId",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindByhwId = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByhwId",
-			new String[] {String.class.getName()},
-			VendorModelImpl.HWID_COLUMN_BITMASK);
-
-		_finderPathCountByhwId = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByhwId",
-			new String[] {String.class.getName()});
-
-		_finderPathWithPaginationFindByname = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByname",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindByname = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByname",
-			new String[] {String.class.getName()},
-			VendorModelImpl.NAME_COLUMN_BITMASK);
-
-		_finderPathCountByname = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByname",
-			new String[] {String.class.getName()});
-
-		_finderPathWithPaginationFindBydescription = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBydescription",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindBydescription = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBydescription",
-			new String[] {String.class.getName()},
-			VendorModelImpl.DESCRIPTION_COLUMN_BITMASK);
-
-		_finderPathCountBydescription = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBydescription",
-			new String[] {String.class.getName()});
-
-		_finderPathWithPaginationFindBymetadata = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBymetadata",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindBymetadata = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBymetadata",
-			new String[] {String.class.getName()},
-			VendorModelImpl.METADATA_COLUMN_BITMASK);
-
-		_finderPathCountBymetadata = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBymetadata",
-			new String[] {String.class.getName()});
-
-		_finderPathWithPaginationFindBywebsite = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findBywebsite",
-			new String[] {
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindBywebsite = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findBywebsite",
-			new String[] {String.class.getName()},
-			VendorModelImpl.WEBSITE_COLUMN_BITMASK);
-
-		_finderPathCountBywebsite = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countBywebsite",
-			new String[] {String.class.getName()});
-
-		_finderPathWithPaginationFindByndm = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITH_PAGINATION, "findByndm",
-			new String[] {
-				String.class.getName(), String.class.getName(),
-				String.class.getName(), Integer.class.getName(),
-				Integer.class.getName(), OrderByComparator.class.getName()
-			});
-
-		_finderPathWithoutPaginationFindByndm = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, VendorImpl.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "findByndm",
-			new String[] {
-				String.class.getName(), String.class.getName(),
-				String.class.getName()
-			},
-			VendorModelImpl.NAME_COLUMN_BITMASK |
-			VendorModelImpl.DESCRIPTION_COLUMN_BITMASK |
-			VendorModelImpl.METADATA_COLUMN_BITMASK);
-
-		_finderPathCountByndm = new FinderPath(
-			VendorModelImpl.ENTITY_CACHE_ENABLED,
-			VendorModelImpl.FINDER_CACHE_ENABLED, Long.class,
-			FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION, "countByndm",
-			new String[] {
-				String.class.getName(), String.class.getName(),
-				String.class.getName()
-			});
 	}
 
 	public void destroy() {
@@ -6024,39 +5788,22 @@ public class VendorPersistenceImpl
 		finderCache.removeCache(FINDER_CLASS_NAME_LIST_WITHOUT_PAGINATION);
 	}
 
+	@ServiceReference(type = CompanyProviderWrapper.class)
+	protected CompanyProvider companyProvider;
 	@ServiceReference(type = EntityCache.class)
 	protected EntityCache entityCache;
-
 	@ServiceReference(type = FinderCache.class)
 	protected FinderCache finderCache;
-
-	private static final String _SQL_SELECT_VENDOR =
-		"SELECT vendor FROM Vendor vendor";
-
-	private static final String _SQL_SELECT_VENDOR_WHERE_PKS_IN =
-		"SELECT vendor FROM Vendor vendor WHERE vendorId IN (";
-
-	private static final String _SQL_SELECT_VENDOR_WHERE =
-		"SELECT vendor FROM Vendor vendor WHERE ";
-
-	private static final String _SQL_COUNT_VENDOR =
-		"SELECT COUNT(vendor) FROM Vendor vendor";
-
-	private static final String _SQL_COUNT_VENDOR_WHERE =
-		"SELECT COUNT(vendor) FROM Vendor vendor WHERE ";
-
+	private static final String _SQL_SELECT_VENDOR = "SELECT vendor FROM Vendor vendor";
+	private static final String _SQL_SELECT_VENDOR_WHERE_PKS_IN = "SELECT vendor FROM Vendor vendor WHERE vendorId IN (";
+	private static final String _SQL_SELECT_VENDOR_WHERE = "SELECT vendor FROM Vendor vendor WHERE ";
+	private static final String _SQL_COUNT_VENDOR = "SELECT COUNT(vendor) FROM Vendor vendor";
+	private static final String _SQL_COUNT_VENDOR_WHERE = "SELECT COUNT(vendor) FROM Vendor vendor WHERE ";
 	private static final String _ORDER_BY_ENTITY_ALIAS = "vendor.";
-
-	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY =
-		"No Vendor exists with the primary key ";
-
-	private static final String _NO_SUCH_ENTITY_WITH_KEY =
-		"No Vendor exists with the key {";
-
-	private static final Log _log = LogFactoryUtil.getLog(
-		VendorPersistenceImpl.class);
-
-	private static final Set<String> _badColumnNames = SetUtil.fromArray(
-		new String[] {"uuid"});
-
+	private static final String _NO_SUCH_ENTITY_WITH_PRIMARY_KEY = "No Vendor exists with the primary key ";
+	private static final String _NO_SUCH_ENTITY_WITH_KEY = "No Vendor exists with the key {";
+	private static final Log _log = LogFactoryUtil.getLog(VendorPersistenceImpl.class);
+	private static final Set<String> _badColumnNames = SetUtil.fromArray(new String[] {
+				"uuid"
+			});
 }

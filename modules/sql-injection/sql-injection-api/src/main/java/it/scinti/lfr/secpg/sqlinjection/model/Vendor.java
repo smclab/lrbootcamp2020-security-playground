@@ -25,22 +25,19 @@ import com.liferay.portal.kernel.util.Accessor;
  *
  * @author Brian Wing Shun Chan
  * @see VendorModel
+ * @see it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl
+ * @see it.scinti.lfr.secpg.sqlinjection.model.impl.VendorModelImpl
  * @generated
  */
-@ImplementationClassName(
-	"it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl"
-)
+@ImplementationClassName("it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl")
 @ProviderType
-public interface Vendor extends PersistedModel, VendorModel {
-
+public interface Vendor extends VendorModel, PersistedModel {
 	/*
 	 * NOTE FOR DEVELOPERS:
 	 *
-	 * Never modify this interface directly. Add methods to <code>it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl</code> and rerun ServiceBuilder to automatically copy the method declarations to this interface.
+	 * Never modify this interface directly. Add methods to {@link it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl} and rerun ServiceBuilder to automatically copy the method declarations to this interface.
 	 */
-	public static final Accessor<Vendor, Long> VENDOR_ID_ACCESSOR =
-		new Accessor<Vendor, Long>() {
-
+	public static final Accessor<Vendor, Long> VENDOR_ID_ACCESSOR = new Accessor<Vendor, Long>() {
 			@Override
 			public Long get(Vendor vendor) {
 				return vendor.getVendorId();
@@ -55,7 +52,5 @@ public interface Vendor extends PersistedModel, VendorModel {
 			public Class<Vendor> getTypeClass() {
 				return Vendor.class;
 			}
-
 		};
-
 }
