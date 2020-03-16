@@ -15,9 +15,7 @@ import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
-import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService;
 import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil;
-import it.scinti.lfr.secpg.sqlinjection.service.VendorServiceUtil;
 import it.scinti.lfr.secpg.sqlinjection.web.constants.SqlInjectionWebPortletKeys;
 
 @Component(
@@ -44,7 +42,7 @@ public class VendorAddMVCActionCommand extends BaseMVCActionCommand {
 			String website = ParamUtil.getString(actionRequest, "website");
 			String metadata = ParamUtil.getString(actionRequest, "metadata");
 			
-			VendorLocalService.addVendor(companyId, name, description, hwId, metadata, website);
+			VendorLocalServiceUtil.addVendor(companyId, name, description, hwId, metadata, website);
 			_log.info("added vendor with name:" + name + " and hwId: " + hwId);
 		} catch (Exception e) {
 			_log.error(e, e);
