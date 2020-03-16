@@ -27,12 +27,12 @@ import com.liferay.portal.kernel.service.persistence.UserPersistence;
 import com.liferay.portal.kernel.util.PortalUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
-import javax.sql.DataSource;
-
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.service.VendorService;
 import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorFinder;
 import it.scinti.lfr.secpg.sqlinjection.service.persistence.VendorPersistence;
+
+import javax.sql.DataSource;
 
 /**
  * Provides the base implementation for the vendor remote service.

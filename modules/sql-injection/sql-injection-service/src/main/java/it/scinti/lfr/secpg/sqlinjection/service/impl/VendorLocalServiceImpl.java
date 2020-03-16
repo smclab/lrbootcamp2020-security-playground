@@ -21,21 +21,23 @@ import it.scinti.lfr.secpg.sqlinjection.service.base.VendorLocalServiceBaseImpl;
  * The implementation of the vendor local service.
  *
  * <p>
- * All custom service methods should be put in this class. Whenever methods are
- * added, rerun ServiceBuilder to copy their definitions into the
- * <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService</code>
- * interface.
+ * All custom service methods should be put in this class. Whenever methods are added, rerun ServiceBuilder to copy their definitions into the <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService</code> interface.
  *
  * <p>
- * This is a local service. Methods of this service will not have security
- * checks based on the propagated JAAS credentials because this service can only
- * be accessed from within the same VM.
+ * This is a local service. Methods of this service will not have security checks based on the propagated JAAS credentials because this service can only be accessed from within the same VM.
  * </p>
  *
  * @author Brian Wing Shun Chan
  * @see VendorLocalServiceBaseImpl
  */
 public class VendorLocalServiceImpl extends VendorLocalServiceBaseImpl {
+
+	/*
+	 * NOTE FOR DEVELOPERS:
+	 *
+	 * Never reference this class directly. Use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil</code>.
+	 */
+	
 	public int searchVendorsCount(long companyId, String keyword) {
 		return vendorFinder.searchVendorsCount(companyId, keyword);
 	}

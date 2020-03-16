@@ -1,4 +1,3 @@
 Bundle-Name: it.scinti.lfr.secpg.sqlinjection.web
 Bundle-SymbolicName: it.scinti.lfr.secpg.sqlinjection.web
 Bundle-Version: 1.0.0
-Export-Package: it.scinti.lfr.secpg.sqlinjection.web.constants
