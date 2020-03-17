@@ -1,7 +1,6 @@
 
 package it.scinti.lfr.secpg.sqlinjection.web.action;
 
-import com.liferay.portal.kernel.exception.PortalException;
 import com.liferay.portal.kernel.log.Log;
 import com.liferay.portal.kernel.log.LogFactoryUtil;
 import com.liferay.portal.kernel.portlet.bridges.mvc.BaseMVCActionCommand;
@@ -10,7 +9,6 @@ import com.liferay.portal.kernel.util.PortalUtil;
 
 import javax.portlet.ActionRequest;
 import javax.portlet.ActionResponse;
-import javax.portlet.PortletRequest;
 
 import org.osgi.service.component.annotations.Component;
 
@@ -59,9 +57,6 @@ public class VendorAddSamplesMVCActionCommand extends BaseMVCActionCommand {
 		}
 	}
 
-	private void validate(PortletRequest portletRequest) throws PortalException {
-	}
-	
 	private String[][] SAMPLE_DATA = new String[][] { 
 		{"3DLabs", "3D3D", "3D Labs", "", "https://www.3dlabs.com"},
 		{"Intel", "8086", "Intel Corporation", "", "https://www.intel.com"},
