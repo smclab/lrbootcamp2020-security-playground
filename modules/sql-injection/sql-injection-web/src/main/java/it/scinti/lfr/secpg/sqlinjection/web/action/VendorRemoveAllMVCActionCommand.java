@@ -30,8 +30,6 @@ public class VendorRemoveAllMVCActionCommand extends BaseMVCActionCommand {
 	@Override
 	protected void doProcessAction(ActionRequest actionRequest, ActionResponse actionResponse) throws Exception {
 
-		hideDefaultSuccessMessage(actionRequest);
-
 		try {
 			int count = VendorLocalServiceUtil.getVendorsCount();
 
