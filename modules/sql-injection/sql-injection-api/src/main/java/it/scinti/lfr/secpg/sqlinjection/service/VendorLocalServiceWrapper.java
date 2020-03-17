@@ -191,6 +191,18 @@ public class VendorLocalServiceWrapper implements VendorLocalService,
 		return _vendorLocalService.fetchVendor(vendorId);
 	}
 
+	@Override
+	public it.scinti.lfr.secpg.sqlinjection.model.Vendor fetchVendorByHwId(
+		String hwId) {
+		return _vendorLocalService.fetchVendorByHwId(hwId);
+	}
+
+	@Override
+	public it.scinti.lfr.secpg.sqlinjection.model.Vendor fetchVendorByName(
+		String name) {
+		return _vendorLocalService.fetchVendorByName(name);
+	}
+
 	/**
 	* Returns the vendor matching the UUID and group.
 	*

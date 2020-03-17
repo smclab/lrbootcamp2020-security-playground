@@ -178,6 +178,12 @@ public interface VendorLocalService extends BaseLocalService,
 	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
 	public Vendor fetchVendor(long vendorId);
 
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Vendor fetchVendorByHwId(String hwId);
+
+	@Transactional(propagation = Propagation.SUPPORTS, readOnly = true)
+	public Vendor fetchVendorByName(String name);
+
 	/**
 	* Returns the vendor matching the UUID and group.
 	*

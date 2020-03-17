@@ -189,6 +189,16 @@ public class VendorLocalServiceUtil {
 		return getService().fetchVendor(vendorId);
 	}
 
+	public static it.scinti.lfr.secpg.sqlinjection.model.Vendor fetchVendorByHwId(
+		String hwId) {
+		return getService().fetchVendorByHwId(hwId);
+	}
+
+	public static it.scinti.lfr.secpg.sqlinjection.model.Vendor fetchVendorByName(
+		String name) {
+		return getService().fetchVendorByName(name);
+	}
+
 	/**
 	* Returns the vendor matching the UUID and group.
 	*

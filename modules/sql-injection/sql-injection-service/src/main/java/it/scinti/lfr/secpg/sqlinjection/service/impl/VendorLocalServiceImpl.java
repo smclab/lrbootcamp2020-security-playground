@@ -42,6 +42,13 @@ public class VendorLocalServiceImpl extends VendorLocalServiceBaseImpl {
 	 * Never reference this class directly. Use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalService</code> via injection or a <code>org.osgi.util.tracker.ServiceTracker</code> or use <code>it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil</code>.
 	 */
 
+	public Vendor fetchVendorByName(String name) {
+		return vendorPersistence.fetchByname_First(name, null);
+	}
+	public Vendor fetchVendorByHwId(String hwId) {
+		return vendorPersistence.fetchByhwId_First(hwId, null);
+	}
+
 	public Vendor addVendor(long companyId, String name, String description,String hwId, String metadata, String website) throws PortalException {
 		long vendorId = counterLocalService.increment();
 		Vendor vendor = vendorPersistence.create(vendorId);
