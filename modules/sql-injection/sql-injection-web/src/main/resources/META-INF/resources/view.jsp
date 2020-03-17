@@ -1,3 +1,4 @@
+<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ include file="./init.jsp" %>
 
 <%
@@ -10,6 +11,10 @@ if (vendors == null) {
 }
 
 String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
+
+String orderByCol = ParamUtil.getString(renderRequest, "orderByCol", "name");
+String orderByType = ParamUtil.getString(renderRequest, "orderByType", "asc");
+
 %>
 
 <liferay-portlet:actionURL varImpl="searchFormActionURL" name="/search/action" />
@@ -66,7 +71,6 @@ String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 			<aui:button type="reset" name="reset" value="clear" />
 		</aui:button-row>
 	</aui:field-wrapper>
-
 	<liferay-ui:search-container
 		cssClass="container-fluid-1280" 
 		delta="20"
@@ -79,8 +83,10 @@ String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 			searchContainer.setTotal(vendorsCount.intValue());
 			renderRequest.setAttribute("redirect", searchFormIteratorURL.toString());
 		%>
-			<liferay-ui:search-container-row className="it.scinti.lfr.secpg.sqlinjection.model.Vendor"
-				keyProperty="vendorId" modelVar="curVendor">
+			<liferay-ui:search-container-row
+				className="it.scinti.lfr.secpg.sqlinjection.model.Vendor"
+				keyProperty="vendorId"
+				modelVar="curVendor">
 	
 <%-- 				<liferay-portlet:renderURL varImpl="vendorDetailsURL"> --%>
 <%-- 					<liferay-portlet:param name="mvcRenderCommandName" value="/vendor/details" /> --%>
@@ -89,38 +95,67 @@ String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 
 				<liferay-ui:search-container-column-text 
 					cssClass="text-nowrap"
-					name="hw-id">
+					name="vendor-id"
+					property="vendorId"
+					orderable="true"
+					orderableProperty="vendorId"
+				>
+					<%= String.valueOf(curVendor.getVendorId()) %>
+				</liferay-ui:search-container-column-text>
+
+				<liferay-ui:search-container-column-text 
+					cssClass="text-nowrap"
+					name="vendor-name"
+					property="name"
+					orderable="true"
+					orderableProperty="name"
+				>
+					<%= curVendor.getName() %>
+				</liferay-ui:search-container-column-text>
+				
+				<liferay-ui:search-container-column-text 
+					cssClass="text-nowrap"
+					name="hw-id"
+					property="hwId"
+					orderable="true"
+					orderableProperty="hwId"
+				>
 					<%= curVendor.getHwId() %>
 				</liferay-ui:search-container-column-text>
 	
 				<liferay-ui:search-container-column-text 
 					cssClass="text-nowrap"
-					name="vendor-name">
-					<%= curVendor.getName() %>
-				</liferay-ui:search-container-column-text>
-
-				<liferay-ui:search-container-column-text 
-					cssClass="text-nowrap"
-					name="vendor-website">
+					name="vendor-website"
+					property="website"
+					orderable="true"
+					orderableProperty="website"
+				>
 					<%= curVendor.getWebsite() %>
 				</liferay-ui:search-container-column-text>
 
 				<liferay-ui:search-container-column-text 
 					cssClass="text-nowrap"
-					name="vendor-description">
+					name="vendor-description"
+					property="description"
+					orderable="true"
+					orderableProperty="description"
+				>
 					<%= curVendor.getDescription() %>
 				</liferay-ui:search-container-column-text>
 
 				<liferay-ui:search-container-column-text 
 					cssClass="text-nowrap"
-					name="vendor-metadata">
+					name="vendor-metadata"
+					orderable="true"
+					orderableProperty="metadata"
+				>
 					<%= curVendor.getMetadata() %>
 				</liferay-ui:search-container-column-text>
 					
 	
 			</liferay-ui:search-container-row>
 	
-		<liferay-ui:search-iterator displayStyle="list" markupView="lexicon" />
+		<liferay-ui:search-iterator displayStyle="list" />
 	
 	</liferay-ui:search-container>
 </aui:form>
