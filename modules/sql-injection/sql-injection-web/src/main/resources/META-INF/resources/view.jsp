@@ -1,6 +1,10 @@
 <%@ include file="./init.jsp" %>
 
 <%
+String sqliConfirmMessage = LanguageUtil.get(request,"confirm-sql-command-for-injection");
+String sqliSuccessMessage = LanguageUtil.get(request,"please-see-the-console-log-for-injection");
+String sqliDefaultSQL = "(CASE WHEN  (SELECT substring(CONVERT(userId, CHAR),1,1) FROM user_ WHERE emailAddress like 'test@liferay.com') = '2' THEN name ELSE vendorId END)";
+
 List<Vendor> vendors = (List<Vendor>) renderRequest.getAttribute("vendors");
 Long vendorsCount = GetterUtil.getLong(renderRequest.getAttribute("vendorsCount"));
 
@@ -160,32 +164,22 @@ String orderByType = ParamUtil.getString(renderRequest, SearchContainer.DEFAULT_
 	}
 	function doSqlInjection() {
 		event.preventDefault();
-
-		var prevState = window.localStorage.getItem("curState");
-		if (!prevState) {
-			console.log("- Initializing localStorage...");
-			prevState = getCurrentState();
-			window.localStorage.setItem("curState", prevState);
-		}
-		else {
-			console.log("- localStorage loaded");
-		}
-		
 		var namespace = "<portlet:namespace/>";
-		var sqlinjbutton = AUI().one("#<portlet:namespace/>sqlinjbutton");
 		var searchUrl = "<%= searchFormActionURL.toString() %>";
-		var sqlinj_default = "(CASE WHEN  (SELECT substring(CONVERT(userId, CHAR),1,1) FROM user_ WHERE emailAddress like 'test@liferay.com') = '2' THEN name ELSE vendorId END)";
-		var sqlinj =  prompt("Please enter sql injection", sqlinj_default);
-		if (sqlinj == null ||sqlinj == undefined || sqlinj.length == 0) {
-			sqlinj = sqlinj_default;
+		var sqliConfirmMessage = "<%= sqliConfirmMessage %>";
+		var sqliSuccessMessage = "<%= sqliSuccessMessage %>";
+		var sqliDefaultSQL = "<%= sqliDefaultSQL %>";
+		var sqli =  prompt(sqliConfirmMessage, sqliDefaultSQL);
+		if (sqli == null || sqli == undefined || sqli.length == 0) {
+			sqli = sqliDefaultSQL;
 		}
 		else {
-			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_COL_PARAM %>" + "=" + sqlinj;
-			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM %>" + "=" + "asc"; 
+			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_COL_PARAM %>" + "=" + sqli;
+			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM %>" + "=" + "asc";
 		
-			console.log("injection url is: ");
+			console.log("URL for SQL Injection demonstration is: ");
 			console.log(searchUrl);
-			alert("Please open your JavaScript console to see the injection url!");
+			alert(sqliSuccessMessage);
 		}
 	}
 </aui:script>

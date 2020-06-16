@@ -14,6 +14,7 @@
 <%@page import="java.util.List"%>
 
 <%@page import="com.liferay.portal.kernel.dao.search.SearchContainer"%>
+<%@page import="com.liferay.portal.kernel.language.LanguageUtil"%>
 <%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 
 <%@page import="it.scinti.lfr.secpg.sqlinjection.model.Vendor"%>
