@@ -1,0 +1,5 @@
+Bundle-Name: it.scinti.lfr.secpg.xssinjection.api
+Bundle-SymbolicName: it.scinti.lfr.secpg.xssinjection.api
+Bundle-Version: 1.0.0
+-check: EXPORTS
+-includeresource: META-INF/service.xml=../xss-injection-service/service.xml
