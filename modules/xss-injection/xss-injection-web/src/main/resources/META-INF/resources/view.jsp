@@ -1,16 +1,15 @@
 <%@ include file="./init.jsp" %>
 
 <%
-String firstName = GetterUtil.getString(renderRequest.getAttribute("firstName"), "");
-String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"), "");
-
+String firstName = GetterUtil.getString(renderRequest.getAttribute("firstName"));
+String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 %>
 <liferay-portlet:actionURL
 	varImpl="submitActionURL" name="/submit/action" />
 
 <aui:form name="fm" action="<%= submitActionURL.toString() %>">
-	<c:if test="<%= Validator.isNotNull(firstName) %>">
-		<p>Hello <%= firstName %></p>
+	<c:if test="<%= Validator.isNotNull(firstName) || Validator.isNotNull(lastName) %>">
+		<p>Hello, <%= firstName %> <%= lastName %></p>
 	</c:if>
 	<aui:row>
 		<aui:col>
@@ -20,13 +19,12 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"), "
 	<aui:row>
 		<aui:col>
 			<aui:input type="text" name="lastName" label="last-name" value="<%= lastName %>"/>
-		</aui:col>	
+		</aui:col>
 	</aui:row>
-	<input type="hidden" name="strip" value="0"/>
-	<input type="hidden" name="js_fast_load" value="false"/>
 	<aui:button-row>
 		<aui:button type="submit" name="submit" value="submit"/>
 	</aui:button-row>
+
 	<aui:button-row>
 		<% 
 		for (int inj = 0 ; inj < 3; inj++) {
@@ -52,11 +50,11 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"), "
 		injIndex = (injIndex === undefined ? 0 : injIndex % 3);
 		var suggestion = "";
 		if (injIndex == 0) {
-			suggestion = "'+eval(unescape(\"alert%28document.cookie%29\"))+'"
+			suggestion = "'+eval(unescape(\"alert%28document.cookie%29\"))+'";
 		} else if (injIndex == 1) {
-			suggestion = "'+eval(unescape(\"var%20x%3D10%3B%20var%20y%3D10%3B%20alert%28%27x*y%3D%27%20+%20x*y%29\"))+'"
+			suggestion = "'+eval(unescape(\"var%20x%3D10%3B%20var%20y%3D10%3B%20alert%28%27x*y%3D%27%20+%20x*y%29\"))+'";
 		} else if (injIndex == 2) {
-			suggestion = "'+eval(unescape(\"alert%28document.cookie%29\"))+'"
+			suggestion = "< script > ... < / script >";
 		}
 		lastNameField.val(suggestion);
 	}
