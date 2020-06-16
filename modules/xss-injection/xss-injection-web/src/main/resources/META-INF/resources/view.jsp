@@ -54,7 +54,7 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 		} else if (injIndex == 1) {
 			suggestion = "'+eval(unescape(\"var%20x%3D10%3B%20var%20y%3D10%3B%20alert%28%27x*y%3D%27%20+%20x*y%29\"))+'";
 		} else if (injIndex == 2) {
-			suggestion = "< script > ... < / script >";
+			suggestion = "< script > alert('remove-spaces-and-see-what-happens-after-submit') < / script >";
 		}
 		lastNameField.val(suggestion);
 	}
