@@ -4,4 +4,60 @@
 <service-builder package-path="it.scinti.lfr.secpg.xssinjection">
 	<namespace>xssj</namespace>
 	<!--<entity data-source="sampleDataSource" local-service="true" name="Foo" remote-service="false" session-factory="sampleSessionFactory" table="foo" tx-manager="sampleTransactionManager uuid="true"">-->
+	<entity local-service="true" name="Feedback" remote-service="true" uuid="true">
+
+		<!-- PK fields -->
+
+		<column name="feedbackId" primary="true" type="long" />
+
+		<!-- Group instance -->
+
+		<column name="groupId" type="long" />
+
+		<!-- Audit fields -->
+
+		<column name="companyId" type="long" />
+		<column name="userId" type="long" />
+		<column name="userName" type="String" />
+		<column name="createDate" type="Date" />
+		<column name="modifiedDate" type="Date" />
+
+		<!-- Other fields -->
+
+		<column name="firstName" type="String" />
+		<column name="lastName" type="String" />
+		<column name="email" type="String" />
+		<column name="description" type="String" />
+
+		<!-- Order -->
+
+		<order by="asc">
+			<order-column name="feedbackId" />
+		</order>
+
+		<!-- Finder methods -->
+
+		<finder name="email" return-type="Collection">
+			<finder-column name="email" />
+		</finder>
+
+		<finder name="lastName" return-type="Collection">
+			<finder-column name="lastName" />
+		</finder>
+
+		<finder name="description" return-type="Collection">
+			<finder-column name="description" />
+		</finder>
+
+		<finder name="createDate" return-type="Collection">
+			<finder-column name="createDate" />
+		</finder>
+
+		<finder name="createDateAndEmail" return-type="Collection">
+			<finder-column name="createDate" />
+			<finder-column name="email" />
+		</finder>
+
+	</entity>
+
 </service-builder>

@@ -3,3 +3,8 @@ Bundle-SymbolicName: it.scinti.lfr.secpg.xssinjection.api
 Bundle-Version: 1.0.0
 -check: EXPORTS
 -includeresource: META-INF/service.xml=../xss-injection-service/service.xml
+Export-Package: \
+	it.scinti.lfr.secpg.xssinjection.exception,\
+	it.scinti.lfr.secpg.xssinjection.model,\
+	it.scinti.lfr.secpg.xssinjection.service,\
+	it.scinti.lfr.secpg.xssinjection.service.persistence
