@@ -3,6 +3,7 @@
 <%
 String firstName = GetterUtil.getString(renderRequest.getAttribute("firstName"));
 String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
+String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenField"));
 %>
 <liferay-portlet:actionURL
 	varImpl="submitActionURL" name="/submit/action" />
@@ -21,6 +22,7 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 			<aui:input type="text" name="lastName" label="last-name" value="<%= lastName %>"/>
 		</aui:col>
 	</aui:row>
+	<aui:input type="hidden" name="hiddenField" value"<%= hiddenField %>/>
 	<aui:button-row>
 		<aui:button type="submit" name="submit" value="submit"/>
 	</aui:button-row>
@@ -40,6 +42,7 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 <aui:script>
 	var firstName = '<%= firstName %>';
 	var lastName = '<%= lastName %>';
+	var hiddenField = '<%= hiddenField %>';
 	var lastNameField = $("#<portlet:namespace/>lastName");
 	console.log("firstName: " + firstName);
 	console.log("lastName: " + lastName);
