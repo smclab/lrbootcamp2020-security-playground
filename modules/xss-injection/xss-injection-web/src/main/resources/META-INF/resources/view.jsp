@@ -22,7 +22,7 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 			<aui:input type="text" name="lastName" label="last-name" value="<%= lastName %>"/>
 		</aui:col>
 	</aui:row>
-	<aui:input type="hidden" name="hiddenField" value"<%= hiddenField %>/>
+	<aui:input type="hidden" name="hiddenField" value="<%= hiddenField %>"/>
 	<aui:button-row>
 		<aui:button type="submit" name="submit" value="submit"/>
 	</aui:button-row>
@@ -43,9 +43,9 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 	var firstName = '<%= firstName %>';
 	var lastName = '<%= lastName %>';
 	var hiddenField = '<%= hiddenField %>';
-	var lastNameField = $("#<portlet:namespace/>lastName");
 	console.log("firstName: " + firstName);
 	console.log("lastName: " + lastName);
+	var lastNameField = $("#<portlet:namespace/>lastName");
 	var suggestions = [
 		"'+eval(unescape(\"alert%28document.cookie%29\"))+'",
 		"< img src=# onerror=javascript:alert(String.fromCharCode(88,83,83)) >< /img >",
