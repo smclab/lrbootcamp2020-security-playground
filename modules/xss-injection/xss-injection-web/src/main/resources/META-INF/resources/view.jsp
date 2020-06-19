@@ -1,3 +1,4 @@
+<%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@ include file="./init.jsp" %>
 
 <%
@@ -8,7 +9,7 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 <liferay-portlet:actionURL
 	varImpl="submitActionURL" name="/submit/action" />
 
-<aui:form name="fm" action="<%= submitActionURL.toString() %>">
+<aui:form name="fm" method="post" action="<%= submitActionURL.toString() %>">
 	<c:if test="<%= Validator.isNotNull(firstName) || Validator.isNotNull(lastName) %>">
 		<p>Hello, <%= firstName %> <%= lastName %></p>
 	</c:if>
@@ -21,14 +22,11 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 		<aui:col>
 			<aui:input type="text" name="lastName" label="last-name" value="<%= lastName %>"/>
 		</aui:col>
-		<aui:col cssClass="hide">
-			<aui:input type="text" name="hiddenField" value="<%= hiddenField %>"/>
-		</aui:col>
 	</aui:row>
 	<aui:button-row>
 		<aui:button type="submit" name="submit" value="submit"/>
 	</aui:button-row>
-
+	
 	<aui:button-row>
 		<% 
 		for (int i = 0 ; i < 4; i++) {
@@ -39,6 +37,9 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 		}
 		%>
 	</aui:button-row>
+
+	<aui:input type="hidden" name="hiddenField" value="<%= hiddenField %>"/>
+	<aui:input type="hidden" name="redirect" value="<%= PortalUtil.getCurrentURL(request) %>"/>
 </aui:form>
 
 <aui:script>

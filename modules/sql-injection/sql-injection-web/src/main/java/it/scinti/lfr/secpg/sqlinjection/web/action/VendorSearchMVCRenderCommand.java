@@ -1,31 +1,10 @@
 
 package it.scinti.lfr.secpg.sqlinjection.web.action;
 
-import com.liferay.portal.kernel.dao.search.SearchContainer;
-import com.liferay.portal.kernel.log.Log;
-import com.liferay.portal.kernel.log.LogFactoryUtil;
-import com.liferay.portal.kernel.portlet.bridges.mvc.MVCRenderCommand;
-import com.liferay.portal.kernel.util.OrderByComparator;
-import com.liferay.portal.kernel.util.ParamUtil;
-import com.liferay.portal.kernel.util.PortalUtil;
-
-import java.util.List;
-
-import javax.portlet.PortletException;
-import javax.portlet.RenderRequest;
-import javax.portlet.RenderResponse;
-
-import org.osgi.service.component.annotations.Component;
-
-import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
-import it.scinti.lfr.secpg.sqlinjection.service.VendorLocalServiceUtil;
-import it.scinti.lfr.secpg.sqlinjection.web.constants.SqlInjectionWebPortletKeys;
-import it.scinti.lfr.secpg.sqlinjection.web.util.comparator.VendorOrderByComparator;
-
 @Component(
 	immediate = true,
 	property = {
-		"javax.portlet.name=" + SqlInjectionWebPortletKeys.SQLINJECTION_PORTLET_NAME,
+		"javax.portlet.name=" + XssInjectionWebPortletKeys.XSSINJECTION_PORTLET_NAME,
 		"mvc.command.name=/" },
 	service = MVCRenderCommand.class
 )
