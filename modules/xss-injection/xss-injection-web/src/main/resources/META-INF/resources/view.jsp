@@ -1,4 +1,3 @@
-<%@page import="com.liferay.portal.kernel.util.PortalUtil"%>
 <%@ include file="./init.jsp" %>
 
 <%
@@ -39,7 +38,6 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 	</aui:button-row>
 
 	<aui:input type="hidden" name="hiddenField" value="<%= hiddenField %>"/>
-	<aui:input type="hidden" name="redirect" value="<%= PortalUtil.getCurrentURL(request) %>"/>
 </aui:form>
 
 <aui:script>
