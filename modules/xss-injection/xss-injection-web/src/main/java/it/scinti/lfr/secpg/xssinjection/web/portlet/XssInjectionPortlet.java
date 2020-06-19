@@ -16,6 +16,9 @@ import it.scinti.lfr.secpg.xssinjection.web.constants.XssInjectionWebPortletKeys
 	property = {
 		"com.liferay.portlet.display-category=category.security",
 		"com.liferay.portlet.instanceable=true",
+		"javax.portlet.info.keywords=xss,injection,portlet",
+		"javax.portlet.display-name=XSS Injection Demo",
+		"javax.portlet.description=A demonstration portlet for XSS Injection attacks",
 		"javax.portlet.init-param.template-path=/",
 		"javax.portlet.init-param.view-template=/view.jsp",
 		"javax.portlet.name=" + XssInjectionWebPortletKeys.XSSINJECTION_PORTLET_NAME,

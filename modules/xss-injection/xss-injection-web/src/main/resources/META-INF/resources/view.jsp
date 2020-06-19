@@ -21,8 +21,10 @@ String hiddenField = GetterUtil.getString(renderRequest.getAttribute("hiddenFiel
 		<aui:col>
 			<aui:input type="text" name="lastName" label="last-name" value="<%= lastName %>"/>
 		</aui:col>
+		<aui:col cssClass="hide">
+			<aui:input type="text" name="hiddenField" value="<%= hiddenField %>"/>
+		</aui:col>
 	</aui:row>
-	<aui:input type="hidden" name="hiddenField" value="<%= hiddenField %>"/>
 	<aui:button-row>
 		<aui:button type="submit" name="submit" value="submit"/>
 	</aui:button-row>
