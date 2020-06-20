@@ -3,7 +3,7 @@
 <%
 String sqliConfirmMessage = LanguageUtil.get(request,"confirm-sql-command-for-injection");
 String sqliSuccessMessage = LanguageUtil.get(request,"please-see-the-console-log-for-injection");
-String sqliDefaultSQL = "(CASE WHEN  (SELECT substring(CONVERT(userId, CHAR),1,1) FROM user_ WHERE emailAddress like 'test@liferay.com') = '2' THEN name ELSE vendorId END)";
+String sqliDefaultSQL = "(CASE WHEN  (SELECT substring(CONVERT(userId, CHAR),1,1) FROM user_ WHERE emailAddress = 'test@liferay.com') = '2' THEN name ELSE vendorId END)";
 
 List<Vendor> vendors = (List<Vendor>) renderRequest.getAttribute("vendors");
 Long vendorsCount = GetterUtil.getLong(renderRequest.getAttribute("vendorsCount"));
