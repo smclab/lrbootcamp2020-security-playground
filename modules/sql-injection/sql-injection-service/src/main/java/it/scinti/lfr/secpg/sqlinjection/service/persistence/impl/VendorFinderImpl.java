@@ -8,11 +8,13 @@ import com.liferay.portal.kernel.dao.orm.Session;
 import com.liferay.portal.kernel.dao.orm.Type;
 import com.liferay.portal.kernel.exception.SystemException;
 import com.liferay.portal.kernel.util.OrderByComparator;
+import com.liferay.portal.kernel.util.StringBundler;
 import com.liferay.portal.kernel.util.StringUtil;
 import com.liferay.portal.spring.extender.service.ServiceReference;
 
 import java.util.Iterator;
 import java.util.List;
+import java.util.Map;
 
 import it.scinti.lfr.secpg.sqlinjection.model.Vendor;
 import it.scinti.lfr.secpg.sqlinjection.model.impl.VendorImpl;
@@ -90,8 +92,27 @@ public class VendorFinderImpl
 			String orderBy = (orderByComparator == null) ? 
 				"[$Vendor$].name" : orderByComparator.getOrderBy();
 			
-			sql = StringUtil.replace(sql, "[$ORDER_BY$]", orderBy);
+			StringBundler sb = new StringBundler();
 
+/*
+ * Safe version:
+ * 
+			if (orderByComparator != null) {
+				appendOrderByComparator(
+					sb, "", orderByComparator);
+			}
+			sql = StringUtil.replace(sql, "[$ORDER_BY$]",
+				sb.toString());
+
+*/
+
+/*
+ * Unsafe version:
+ */
+
+			sql = StringUtil.replace(sql, "[$ORDER_BY$]", " ORDER BY " + orderBy);
+/*
+ */
 			sql = StringUtil.replace(
 				sql, "[$Vendor$]", 
 				VendorModelImpl.TABLE_NAME);
@@ -118,6 +139,12 @@ public class VendorFinderImpl
 		}
 
 	}
+	
+	@Override
+	protected Map<String, Integer> getTableColumnsMap() {
+		return VendorModelImpl.TABLE_COLUMNS_MAP;
+	}
+
 	@ServiceReference(type = CustomSQL.class)
 	private CustomSQL _customSQL;
 }
