@@ -107,7 +107,7 @@ public class VendorFinderImpl
 */
 
 /*
- * Unsafe version:
+ * Vulnerable to SQL Injection attacks version:
  */
 
 			sql = StringUtil.replace(sql, "[$ORDER_BY$]", " ORDER BY " + orderBy);
