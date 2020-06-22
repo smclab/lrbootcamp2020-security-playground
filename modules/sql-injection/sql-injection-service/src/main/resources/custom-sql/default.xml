@@ -31,7 +31,7 @@
 					lower(description) like ?
 				)
 			)
-			ORDER BY [$ORDER_BY$]
+			[$ORDER_BY$]
 		]]>
 	</sql>
 </custom-sql>
