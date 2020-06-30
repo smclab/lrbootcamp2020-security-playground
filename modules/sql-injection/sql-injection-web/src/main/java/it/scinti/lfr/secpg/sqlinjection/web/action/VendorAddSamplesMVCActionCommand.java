@@ -56,10 +56,10 @@ public class VendorAddSamplesMVCActionCommand extends BaseMVCActionCommand {
 	}
 
 	private String[][] SAMPLE_DATA = new String[][] { 
-		{"3DLabs", "3D3D", "3D Labs", "", "https://www.3dlabs.com"},
-		{"Intel", "8086", "Intel Corporation", "", "https://www.intel.com"},
-		{"A-Trend", "117A", "A-Trend Technology", "", ""},
-		{"ABB", "125A", "ABB Power Systems", "", ""}
+		{"Intel", "8086", "Intel Corporation", "Microprocessors", "https://www.intel.com"},
+		{"Z-Com, Inc.", "17CF", "Z-Com Incorporated", "Network devices", "https://www.zcom.com.tw/"},
+		{"3DLabs", "3D3D", "3Dlabs", "Video cards", "http://www.3dlabs.com"},
+		{"SanDisk", "1AED", "SanDisk Corporation", "Storage", "http://www.sandisk.com/"},
 
 	};
 
